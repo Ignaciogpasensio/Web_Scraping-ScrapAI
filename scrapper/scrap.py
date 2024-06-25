@@ -1,60 +1,52 @@
 import requests
-from bs4 import BeautifulSoup
 import json
+import re
 from schema.product import ClothUnit
 import argparse
 
-# URL base del sitio web de Scalpers
+# Base URL of Scalpers website
 base_url = 'https://en.gb.scalperscompany.com'
 skirts_url = f'{base_url}/collections/woman-new-collection-skirts-2060'
 
 def scrape_skirts():
-    # Lista para almacenar los datos de todas las faldas
     skirts_data = []
 
-    # Realizar la solicitud GET a la URL de las faldas
+    # Fetch the HTML content of the skirts URL
     response = requests.get(skirts_url)
     if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
+        # Extract JSON-LD structured data using regular expressions
+        pattern = r'<script type="application/ld\+json">(.*?)</script>'
+        json_ld_data = re.findall(pattern, response.text, re.DOTALL)
 
-        # Encontrar todos los productos de la colección de faldas
-        products = soup.find_all('div', class_='ProductItem__Info')
+        for json_data in json_ld_data:
+            try:
+                product_info = json.loads(json_data)
 
-        for product in products:
-            # Obtener el nombre del producto
-            product_name = product.find('h2', class_='ProductItem__Title').text.strip()
+                # Extract relevant fields from JSON-LD data
+                product_url = product_info.get('url', '')
+                product_name = product_info.get('name', '')
+                sku = ''  # Extract SKU if available
+                price = product_info.get('offers', {}).get('price', '')
+                images = [product_info.get('image', {}).get('url', '')]
+                metadata = [product_info.get('description', '')]
 
-            # Construir la URL completa del producto
-            product_url = base_url + product.find('a', class_='ProductItem__ImageWrapper')['href']
+                # Create ClothUnit instance
+                cloth_unit = ClothUnit(
+                    product_url=product_url,
+                    sku=sku,
+                    product_name=product_name,
+                    images=images,
+                    metadata=metadata,
+                    price=price,
+                    sizes=[],  # You can add logic to extract sizes if available
+                    cloth_type='skirt'  # Assuming all are skirts based on URL
+                )
 
-            # Obtener el SKU del producto desde los metadatos (si está disponible)
-            sku = product.find('span', class_='ProductItem__Sku').text.strip()
+                skirts_data.append(cloth_unit.dict())
 
-            # Obtener el precio del producto
-            price = product.find('span', class_='ProductItem__Price').text.strip()
-
-            # Crear una lista vacía para las imágenes
-            images = []
-
-            # Obtener todas las imágenes del producto
-            product_images = product.find_all('img', class_='ProductItem__Image')
-            for img in product_images:
-                if img.has_attr('data-src'):
-                    images.append(base_url + img['data-src'])
-
-            # Crear un diccionario con los datos del producto
-            product_data = {
-                'product_name': product_name,
-                'product_url': product_url,
-                'sku': sku,
-                'price': price,
-                'images': images,
-                'sizes': [],  # Agregar tamaños si se encuentran en la página
-                'metadata': []  # Agregar metadatos relevantes si se encuentran en la página
-            }
-
-            # Agregar los datos del producto a la lista de faldas
-            skirts_data.append(product_data)
+            except json.JSONDecodeError as e:
+                print(f'Error decoding JSON: {e}')
+                continue
 
     else:
         print(f'Failed to fetch skirts page. Status code: {response.status_code}')
@@ -69,7 +61,7 @@ def main():
     if args.type == 'skirts':
         skirts_data = scrape_skirts()
 
-        # Imprimir los datos de las faldas en formato JSON
+        # Print skirts data in JSON format
         print(json.dumps(skirts_data, indent=2))
 
 if __name__ == "__main__":
