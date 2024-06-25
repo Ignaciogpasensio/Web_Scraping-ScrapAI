@@ -7,8 +7,13 @@
     "images": [
       "\\/\\/en.gb.scalperscompany.com\\/cdn\\/shop\\/files\\/44770-BLACK-P-1.jpg?v=1718970542"
     ],
-    "cloth_type": "Not specified",
-    "sizes": "XS",
+    "cloth_type": "Falda",
+    "sizes": [
+      "BLACK / XS",
+      "BLACK / S",
+      "BLACK / M",
+      "BLACK / L"
+    ],
     "metadata": {}
   },
   {
@@ -19,8 +24,13 @@
     "images": [
       "\\/\\/en.gb.scalperscompany.com\\/cdn\\/shop\\/files\\/34594-BLACK-P-1.jpg?v=1715949813"
     ],
-    "cloth_type": "Not specified",
-    "sizes": "XS",
+    "cloth_type": "Falda",
+    "sizes": [
+      "BLACK / XS",
+      "BLACK / S",
+      "BLACK / M",
+      "BLACK / L"
+    ],
     "metadata": {}
   },
   {
@@ -31,8 +41,12 @@
     "images": [
       "\\/\\/en.gb.scalperscompany.com\\/cdn\\/shop\\/files\\/34764-BLACK-P-1_b11c05e2-f100-4d5d-aba3-cee484bbbb1e.jpg?v=1715949820"
     ],
-    "cloth_type": "Not specified",
-    "sizes": "S",
+    "cloth_type": "Falda",
+    "sizes": [
+      "BLACK / S",
+      "BLACK / M",
+      "BLACK / L"
+    ],
     "metadata": {}
   },
   {
@@ -43,8 +57,13 @@
     "images": [
       "\\/\\/en.gb.scalperscompany.com\\/cdn\\/shop\\/files\\/44356-LIGHTBLUE-P-1.jpg?v=1718970477"
     ],
-    "cloth_type": "Not specified",
-    "sizes": "M",
+    "cloth_type": "Falda",
+    "sizes": [
+      "LIGHT BLUE / XS",
+      "LIGHT BLUE / S",
+      "LIGHT BLUE / M",
+      "LIGHT BLUE / L"
+    ],
     "metadata": {}
   }
 ]
