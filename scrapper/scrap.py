@@ -16,21 +16,21 @@ def scrape_products(url):
 
         # Logic to scrape each product
         for product in soup.find_all('div', class_='ProductItem'):
-            product_data = {}
+            product_data = ClothUnit()
 
             # Extract product name
             product_name = product.find('div', class_='ProductItem__Title')
             if product_name:
-                product_data['product_name'] = product_name.text.strip()
+                product_data.product_name = product_name.text.strip()
 
             # Extract product URL
             product_url = product.find('a', class_='ProductItem__Image')['href']
-            product_data['product_url'] = f"https://en.gb.scalperscompany.com{product_url}"
+            product_data.product_url = f"https://en.gb.scalperscompany.com{product_url}"
 
             # Extract SKU if available
             sku = product.find('span', class_='ProductItem__Meta')
             if sku:
-                product_data['sku'] = sku.text.strip()
+                product_data.sku = sku.text.strip()
 
             # Extract images if available
             images = []
@@ -38,26 +38,26 @@ def scrape_products(url):
                 img_src = img.get('src')
                 if img_src:
                     images.append(img_src)
-            product_data['images'] = images
+            product_data.images = images
 
             # Metadata (if available)
-            product_data['metadata'] = []
+            product_data.metadata = []
 
             # Price (if available)
             price = product.find('span', class_='ProductItem__Price')
             if price:
-                product_data['price'] = price.text.strip()
+                product_data.price = price.text.strip()
 
             # Sizes (if available)
             sizes = product.find('div', class_='ProductItem__Sizes')
             if sizes:
-                product_data['sizes'] = [size.text.strip() for size in sizes.find_all('span')]
+                product_data.sizes = [size.text.strip() for size in sizes.find_all('span')]
 
             # Cloth type (skirt, etc.)
-            product_data['cloth_type'] = 'skirt'
+            product_data.cloth_type = 'skirt'
 
             # Append product data to products list
-            products.append(product_data)
+            products.append(product_data.dict())
 
         return products
     else:
