@@ -3,8 +3,7 @@ from bs4 import BeautifulSoup
 import json
 from schema.product import ClothUnit  # Assuming ClothUnit is defined in schema/product.py
 
-def scrape_skirts():
-    url = 'https://en.gb.scalperscompany.com/collections/woman-new-collection-skirts-2060'
+def scrape_skirts(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
     }
@@ -51,5 +50,6 @@ def save_to_json(skirts_data):
 
 # Main execution
 if __name__ == "__main__":
-    skirts_data = scrape_skirts()
+    url = 'https://en.gb.scalperscompany.com/collections/woman-new-collection-skirts-2060'
+    skirts_data = scrape_skirts(url)
     save_to_json(skirts_data)
