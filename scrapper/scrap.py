@@ -1,68 +1,94 @@
 import requests
+from bs4 import BeautifulSoup
 import json
-import re
-from schema.product import ClothUnit
 import argparse
 
 # Base URL of Scalpers website
 base_url = 'https://en.gb.scalperscompany.com'
-skirts_url = f'{base_url}/collections/woman-new-collection-skirts-2060'
 
-def scrape_skirts():
-    skirts_data = []
+def scrape_product_details(product_url):
+    data_dict = {}
 
-    # Fetch the HTML content of the skirts URL
-    response = requests.get(skirts_url)
+    # Send a GET request to the product URL
+    response = requests.get(product_url)
+
+    # Check if the request was successful
     if response.status_code == 200:
-        # Extract JSON-LD structured data using regular expressions
-        pattern = r'<script type="application/ld\+json">(.*?)</script>'
-        json_ld_data = re.findall(pattern, response.text, re.DOTALL)
+        # Initialize BeautifulSoup object with the response text
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        for json_data in json_ld_data:
+        # Extracting the product name
+        product_name_elem = soup.find('h1', class_='ProductMeta__Title')
+        if product_name_elem:
+            data_dict['product_name'] = product_name_elem.text.strip()
+
+        # Extracting other product details (price, image, description, etc.)
+        # Example: Extracting price
+        price_elem = soup.find('span', class_='ProductItem__Price')
+        if price_elem:
+            data_dict['price'] = price_elem.text.strip()
+
+        # Example: Extracting image URL
+        image_elem = soup.find('img', class_='ProductItem__Image')
+        if image_elem:
+            data_dict['image_url'] = base_url + image_elem.get('src')
+
+        # Add more extraction logic for other product details as needed
+
+    else:
+        print(f"Failed to fetch product page '{product_url}'. Status code:", response.status_code)
+
+    return data_dict
+
+def scrape_products(skirts_url):
+    products_data = []
+
+    # Send a GET request to the skirts URL
+    response = requests.get(skirts_url)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Initialize BeautifulSoup object with the response text
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Find all product items within the specified class
+        products = soup.find_all('div', class_='ProductItem')
+
+        for product in products:
             try:
-                product_info = json.loads(json_data)
+                # Extract product URL
+                product_url = base_url + product.find('a')['href']
 
-                # Extract relevant fields from JSON-LD data
-                product_url = product_info.get('url', '')
-                product_name = product_info.get('name', '')
-                sku = ''  # Extract SKU if available
-                price = product_info.get('offers', {}).get('price', '')
-                images = [product_info.get('image', {}).get('url', '')]
-                metadata = [product_info.get('description', '')]
+                # Scrape product details
+                product_data = scrape_product_details(product_url)
 
-                # Create ClothUnit instance
-                cloth_unit = ClothUnit(
-                    product_url=product_url,
-                    sku=sku,
-                    product_name=product_name,
-                    images=images,
-                    metadata=metadata,
-                    price=price,
-                    sizes=[],  # You can add logic to extract sizes if available
-                    cloth_type='skirt'  # Assuming all are skirts based on URL
-                )
+                if product_data:
+                    products_data.append(product_data)
 
-                skirts_data.append(cloth_unit.dict())
-
-            except json.JSONDecodeError as e:
-                print(f'Error decoding JSON: {e}')
+            except Exception as e:
+                print(f'Error processing product: {e}')
                 continue
 
     else:
-        print(f'Failed to fetch skirts page. Status code: {response.status_code}')
+        print(f'Failed to fetch skirts page. Status code:', response.status_code)
 
-    return skirts_data
+    return products_data
 
 def main():
-    parser = argparse.ArgumentParser(description='Scrape skirts data from Scalpers website.')
+    parser = argparse.ArgumentParser(description='Scrape product data from Scalpers website.')
     parser.add_argument('--type', choices=['skirts'], help='Type of clothing to scrape', required=True)
     args = parser.parse_args()
 
     if args.type == 'skirts':
-        skirts_data = scrape_skirts()
+        skirts_url = f'{base_url}/collections/woman-new-collection-skirts-2060'
+        products_data = scrape_products(skirts_url)
 
-        # Print skirts data in JSON format
-        print(json.dumps(skirts_data, indent=2))
+        # Save scraped data to JSON file
+        output_file = 'skirts_data.json'
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(products_data, f, ensure_ascii=False, indent=2)
+        
+        print(f'Successfully scraped {len(products_data)} products. Data saved to {output_file}')
 
 if __name__ == "__main__":
     main()
