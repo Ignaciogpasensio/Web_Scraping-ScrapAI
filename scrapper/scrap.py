@@ -22,18 +22,47 @@ def scrape_product_details(product_url):
         if product_name_elem:
             data_dict['product_name'] = product_name_elem.text.strip()
 
-        # Extracting other product details (price, image, description, etc.)
+        # Extracting other product details
         # Example: Extracting price
         price_elem = soup.find('span', class_='ProductItem__Price')
         if price_elem:
             data_dict['price'] = price_elem.text.strip()
 
-        # Example: Extracting image URL
-        image_elem = soup.find('img', class_='ProductItem__Image')
-        if image_elem:
-            data_dict['image_url'] = base_url + image_elem.get('src')
+        # Extracting product URL
+        data_dict['product_url'] = product_url
 
-        # Add more extraction logic for other product details as needed
+        # Extracting SKU
+        sku_elem = soup.find('div', class_='ProductItem__SKU')
+        if sku_elem:
+            data_dict['sku'] = sku_elem.text.strip()
+
+        # Extracting images
+        images = []
+        image_elems = soup.find_all('img', class_='ProductItem__Image')
+        for img_elem in image_elems:
+            image_url = base_url + img_elem.get('src')
+            images.append(image_url)
+        data_dict['images'] = images
+
+        # Extracting metadata if available
+        metadata_elems = soup.find_all('div', class_='ProductMeta__Block')
+        metadata = {}
+        for meta_elem in metadata_elems:
+            key = meta_elem.find(class_='ProductMeta__BlockLabel').text.strip()
+            value = meta_elem.find(class_='ProductMeta__BlockContent').text.strip()
+            metadata[key] = value
+        data_dict['metadata'] = metadata
+
+        # Extracting sizes if available
+        sizes_elem = soup.find('select', class_='ProductForm__Option')
+        if sizes_elem:
+            sizes = [option.text.strip() for option in sizes_elem.find_all('option')]
+            data_dict['sizes'] = sizes
+
+        # Extracting cloth type (if available)
+        cloth_type_elem = soup.find('span', class_='ProductMeta__Type')
+        if cloth_type_elem:
+            data_dict['cloth_type'] = cloth_type_elem.text.strip()
 
     else:
         print(f"Failed to fetch product page '{product_url}'. Status code:", response.status_code)
