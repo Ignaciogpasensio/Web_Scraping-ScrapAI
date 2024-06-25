@@ -6,7 +6,7 @@ import argparse
 # Base URL of Scalpers website
 base_url = 'https://en.gb.scalperscompany.com'
 
-def scrape_product_details(product_url):
+def extract_product_data(product_url):
     data_dict = {}
 
     # Send a GET request to the product URL
@@ -22,8 +22,7 @@ def scrape_product_details(product_url):
         if product_name_elem:
             data_dict['product_name'] = product_name_elem.text.strip()
 
-        # Extracting other product details
-        # Example: Extracting price
+        # Extracting the price
         price_elem = soup.find('span', class_='ProductItem__Price')
         if price_elem:
             data_dict['price'] = price_elem.text.strip()
@@ -31,38 +30,52 @@ def scrape_product_details(product_url):
         # Extracting product URL
         data_dict['product_url'] = product_url
 
-        # Extracting SKU
-        sku_elem = soup.find('div', class_='ProductItem__SKU')
-        if sku_elem:
-            data_dict['sku'] = sku_elem.text.strip()
+        # Extracting SKU and images using the provided script section
+        script_tag = soup.find('script', id='web-pixels-manager-setup')
+        if script_tag:
+            script_content = script_tag.contents[0]
+            
+            # Extract SKU
+            start_index = script_content.find('"sku":"') + len('"sku":"')
+            end_index = script_content.find('"', start_index)
+            sku = script_content[start_index:end_index]
+            data_dict['sku'] = sku
 
-        # Extracting images
-        images = []
-        image_elems = soup.find_all('img', class_='ProductItem__Image')
-        for img_elem in image_elems:
-            image_url = base_url + img_elem.get('src')
-            images.append(image_url)
-        data_dict['images'] = images
+            # Extract images
+            start_index = script_content.find('"src":"') + len('"src":"')
+            end_index = script_content.find('"', start_index)
+            image_url = script_content[start_index:end_index]
+            data_dict['images'] = [image_url]
 
-        # Extracting metadata if available
-        metadata_elems = soup.find_all('div', class_='ProductMeta__Block')
-        metadata = {}
-        for meta_elem in metadata_elems:
-            key = meta_elem.find(class_='ProductMeta__BlockLabel').text.strip()
-            value = meta_elem.find(class_='ProductMeta__BlockContent').text.strip()
-            metadata[key] = value
-        data_dict['metadata'] = metadata
-
-        # Extracting sizes if available
-        sizes_elem = soup.find('select', class_='ProductForm__Option')
-        if sizes_elem:
-            sizes = [option.text.strip() for option in sizes_elem.find_all('option')]
-            data_dict['sizes'] = sizes
+        else:
+            print(f"Script tag not found for product: {product_url}")
 
         # Extracting cloth type (if available)
-        cloth_type_elem = soup.find('span', class_='ProductMeta__Type')
+        cloth_type_elem = soup.find('div', class_='ProductMeta__Type')
         if cloth_type_elem:
             data_dict['cloth_type'] = cloth_type_elem.text.strip()
+        else:
+            data_dict['cloth_type'] = 'Not specified'
+
+        # Extracting sizes (if available)
+        sizes_elem = soup.find('span', id='sizeSpan')
+        if sizes_elem:
+            data_dict['sizes'] = sizes_elem.text.strip()
+        else:
+            data_dict['sizes'] = 'Not specified'
+
+        # Extracting metadata (if available)
+        metadata_elem = soup.find('ul', class_='ProductMeta__DetailsList')
+        if metadata_elem:
+            metadata_items = metadata_elem.find_all('li')
+            metadata = {}
+            for item in metadata_items:
+                key = item.find('span', class_='ProductMeta__Label').text.strip()
+                value = item.find('span', class_='ProductMeta__Value').text.strip()
+                metadata[key] = value
+            data_dict['metadata'] = metadata
+        else:
+            data_dict['metadata'] = {}
 
     else:
         print(f"Failed to fetch product page '{product_url}'. Status code:", response.status_code)
@@ -88,8 +101,8 @@ def scrape_products(skirts_url):
                 # Extract product URL
                 product_url = base_url + product.find('a')['href']
 
-                # Scrape product details
-                product_data = scrape_product_details(product_url)
+                # Extract product details
+                product_data = extract_product_data(product_url)
 
                 if product_data:
                     products_data.append(product_data)
