@@ -10,5 +10,7 @@ response = requests.get(url)
 if response.status_code == 200:
     # Initialize BeautifulSoup object with the response text
     soup = BeautifulSoup(response.text, 'html.parser')
+    print("Webpage fetched successfully.")
 else:
     print("Failed to fetch the webpage. Status code:", response.status_code)
+
