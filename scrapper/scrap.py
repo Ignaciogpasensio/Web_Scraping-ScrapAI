@@ -51,18 +51,27 @@ def extract_product_data(product_url):
             print(f"Script tag not found for product: {product_url}")
 
         # Extracting cloth type (if available)
-        cloth_type_elem = soup.find('div', class_='ProductMeta__Type')
-        if cloth_type_elem:
-            data_dict['cloth_type'] = cloth_type_elem.text.strip()
-        else:
-            data_dict['cloth_type'] = 'Not specified'
+        data_dict['cloth_type'] = 'Falda'  # Assuming all are skirts as before
 
-        # Extracting sizes (if available)
-        sizes_elem = soup.find('span', id='sizeSpan')
-        if sizes_elem:
-            data_dict['sizes'] = sizes_elem.text.strip()
+        # Extracting sizes using the old method
+        variants_script_tag = soup.find('script', text=lambda text: text and 'var meta' in text)
+        if variants_script_tag:
+            try:
+                start_index = variants_script_tag.string.find('var meta = ') + len('var meta = ')
+                end_index = variants_script_tag.string.find('};', start_index) + 1
+                json_data = variants_script_tag.string[start_index:end_index]
+                meta_data = json.loads(json_data)
+                product_data = meta_data.get('product', {})
+
+                variants = product_data.get('variants', [])
+                sizes = []
+                for variant in variants:
+                    sizes.append(variant.get('public_title', 'Not specified'))
+                data_dict['sizes'] = sizes if sizes else ['Not specified']
+            except json.JSONDecodeError as e:
+                print(f"Error decoding variants JSON data: {e}")
         else:
-            data_dict['sizes'] = 'Not specified'
+            data_dict['sizes'] = ['Not specified']
 
         # Extracting metadata (if available)
         metadata_elem = soup.find('ul', class_='ProductMeta__DetailsList')
