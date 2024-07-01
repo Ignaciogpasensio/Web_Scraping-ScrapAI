@@ -1,12 +1,697 @@
-annotated-types==0.7.0
-beautifulsoup4==4.12.3
-certifi==2024.6.2
-charset-normalizer==3.3.2
-idna==3.7
-pydantic-core==2.18.4
-pydantic==2.7.4
-requests==2.32.3
-soupsieve==2.5
-typing-extensions==4.12.2
-urllib3==2.2.1
-streamlit
+[
+  {
+    "product_name": "VESTIDO FLUIDO PRINT VOLANTES",
+    "product_id": "8949983510855",
+    "product_price_after": 89.9,
+    "product_price_before": 109.0,
+    "product_discount": 18,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/50509-mini-ruflle-long-dress-ss24-multicolor",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/50509-MULTICOLOR-P-1_grande.jpg?v=1713426180",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "MULTICOLOR"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI PUNTO ZIGZAG LUREX",
+    "product_id": "9137352081735",
+    "product_price_after": 74.9,
+    "product_price_before": 99.9,
+    "product_discount": 25,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/bbcstudio24-44393-ziggy-knit-dress-ss24-pink",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/BBC-44393-PINK-1_grande.jpg?v=1712049210",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "PINK"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI FLUIDO TIE DYE",
+    "product_id": "9137352835399",
+    "product_price_after": 79.9,
+    "product_price_before": 89.9,
+    "product_discount": 11,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/bbcstudio24-50503-tie-dye-dress-ss24-red",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/BBC-50503-RED-1_grande.jpg?v=1712049156",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "RED"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI CROCHET TIRANTES",
+    "product_id": "8949929083207",
+    "product_price_after": 59.9,
+    "product_price_before": 69.9,
+    "product_discount": 14,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44397-pointelle-knit-dress-ss24-ecru",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44397-ECRU-P-1_grande.jpg?v=1706529324",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "ECRU"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI CROCHET MULTICOLOR",
+    "product_id": "8949929214279",
+    "product_price_after": 59.9,
+    "product_price_before": 79.9,
+    "product_discount": 25,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44395-crochet-multicolor-dress-ss24-terracotta",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44395-TERRACOTTA-P-1_grande.jpg?v=1708591561",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "TERRACOTTA"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI LENCERO SATÉN",
+    "product_id": "8949929312583",
+    "product_price_after": 49.9,
+    "product_price_before": 89.9,
+    "product_discount": 44,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44406-saten-lace-dress-ss24-mango",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44406-MANGO-P-1_grande.jpg?v=1710175175",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "MANGO"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MINI PRINT DETALLE METALIZADO",
+    "product_id": "8949930426695",
+    "product_price_after": 39.9,
+    "product_price_before": 79.9,
+    "product_discount": 50,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44431-sant-short-dress-ss24-khaki",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44431-KHAKI-P-2_grande.jpg?v=1706625493",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "KHAKI"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI FRUNCE FRONTAL",
+    "product_id": "8949932491079",
+    "product_price_after": 54.9,
+    "product_price_before": 109.0,
+    "product_discount": 50,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44522-lev-front-gather-dress-ss24-natural",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44522-NATURAL-P-1_grande.jpg?v=1711369745",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "NATURAL"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI NUDO DELANTERO",
+    "product_id": "8949929410887",
+    "product_price_after": 59.9,
+    "product_price_before": 69.9,
+    "product_discount": 14,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44407-rawbel-dress-ss24-green",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44407-GREEN-P-1_grande.jpg?v=1706611478",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "GREEN"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI ASIMÉTRICO PRINT",
+    "product_id": "9196433899847",
+    "product_price_after": 89.9,
+    "product_price_before": 99.9,
+    "product_discount": 10,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/50899-sliv-print-dress-ss24-animalprint",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/50899-MULTICOLOR-P-4_grande.jpg?v=1717683891",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "ANIMAL PRINT"
+    ]
+  },
+  {
+    "product_name": "VESTIDO ESCOTE TIRAS TRENZADAS",
+    "product_id": "9196432884039",
+    "product_price_after": 79.9,
+    "product_price_before": 89.9,
+    "product_discount": 11,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/50508-brodie-etnic-dress-ss24-coral",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/50508-CORAL-P-2_grande.jpg?v=1717581013",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "CORAL"
+    ]
+  },
+  {
+    "product_name": "VESTIDO CROCHET CUELLO POLO",
+    "product_id": "8949940257095",
+    "product_price_after": 54.9,
+    "product_price_before": 89.9,
+    "product_discount": 39,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44740-polo-crochet-dress-ss24-blackwhite",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44740-BLACKWHITE-P-1_grande.jpg?v=1711369828",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "WHITE"
+    ],
+    "colors": [
+      "BLACK"
+    ]
+  },
+  {
+    "product_name": "VESTIDO RAYAS NUDO",
+    "product_id": "9083679015239",
+    "product_price_after": 59.9,
+    "product_price_before": 69.9,
+    "product_discount": 14,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44996-stripes-jersey-knot-dress-ss24-pinkstripes",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44996-PINKSTRIPES-P-1_grande.jpg?v=1715337500",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "PINK STRIPES"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI NUDO ESPALDA",
+    "product_id": "9083678851399",
+    "product_price_after": 49.9,
+    "product_price_before": 59.9,
+    "product_discount": 17,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44993-back-knot-dress-ss24-black",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44993-BLACK-P-3_grande.jpg?v=1717673549",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "BLACK"
+    ]
+  },
+  {
+    "product_name": "MONO LINO TIE DYE ESCOTE DOBLE MULTIPOSICÓN",
+    "product_id": "9083677868359",
+    "product_price_after": 79.9,
+    "product_price_before": 89.9,
+    "product_discount": 11,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44955-linen-jumpsuit-ss24-multicolor",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44955-MULTICOLOR-P-1_grande.jpg?v=1716369258",
+    "cloth_type": "Mono",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "MULTICOLOR"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI CROCHET TIRANTES",
+    "product_id": "9083679179079",
+    "product_price_after": 69.9,
+    "product_price_before": 79.9,
+    "product_discount": 13,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44998-crochet-summer-dress-ss24-blue",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44998-BLUE-P-1_grande.jpg?v=1713270246",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "BLUE"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI NUDO ESPALDA",
+    "product_id": "9083678884167",
+    "product_price_after": 49.9,
+    "product_price_before": 59.9,
+    "product_discount": 17,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44993-back-knot-dress-ss24-red",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44993-RED-P-4_grande.jpg?v=1717673572",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "RED"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MINI DENIM CREMALLERA",
+    "product_id": "9196433113415",
+    "product_price_after": 59.9,
+    "product_price_before": 69.9,
+    "product_discount": 14,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/50834-mini-short-denim-dress-ss24-white",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/50834-WHITE-P-2_grande.jpg?v=1717669652",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "WHITE"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI CROCHET TIRANTES",
+    "product_id": "9173724823879",
+    "product_price_after": 69.9,
+    "product_price_before": 79.9,
+    "product_discount": 13,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/c1-44998-crochet-summer-dress-ss24-blue",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44998-BLUE-P-1_09e60933-4b2f-4aef-9c01-962effff97ca_grande.jpg?v=1713951306",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "BLUE"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI SATINADO ABERTURA CINTURA",
+    "product_id": "9137352704327",
+    "product_price_after": 69.9,
+    "product_price_before": 89.9,
+    "product_discount": 22,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/bbcstudio24-44404-saten-cross-waist-dress-ss24-lightgreen",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/BBC-44404-LIGHTGREEN-1_grande.jpg?v=1712049252",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "LIGHT GREEN"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI ÉTNICO",
+    "product_id": "9137352278343",
+    "product_price_after": 54.9,
+    "product_price_before": 109.0,
+    "product_discount": 50,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/bbcstudio24-44400-lev-etnic-dress-ss24-pink",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/BBC-44400-PINK-3_grande.jpg?v=1716548006",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "PINK"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI CUPRO BICOLOR",
+    "product_id": "8949937570119",
+    "product_price_after": 54.9,
+    "product_price_before": 89.9,
+    "product_discount": 39,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44638-bicolor-cupro-dress-ss24-lightyellow",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44638-LIGHTYELLOW-P-2_grande.jpg?v=1710493895",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "LIGHT YELLOW"
+    ]
+  },
+  {
+    "product_name": "VESTIDO LUREX RAYAS CONTRASTE",
+    "product_id": "8949928853831",
+    "product_price_after": 59.9,
+    "product_price_before": 79.9,
+    "product_discount": 25,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44389-lurex-stripes-dress-ss24-multicolor",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44389-MULTICOLOR-P-1_grande.jpg?v=1705658310",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "MULTICOLOR"
+    ]
+  },
+  {
+    "product_name": "VESTIDO ASIMÉTRICO FRUNCES",
+    "product_id": "8949933506887",
+    "product_price_after": 49.9,
+    "product_price_before": 79.9,
+    "product_discount": 38,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44539-fila-asymmetric-dress-ss24-red",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44539-RED-P-1_grande.jpg?v=1710175207",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "RED"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI ABERTURAS CINTURA",
+    "product_id": "8949929181511",
+    "product_price_after": 54.9,
+    "product_price_before": 89.9,
+    "product_discount": 39,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44402-ray-knot-dress-ss24-black",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44402-BLACK-P-2_grande.jpg?v=1718891695",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "BLACK"
+    ]
+  },
+  {
+    "product_name": "VESTIDO BORDADO HOMBRO DESCUBIERTO",
+    "product_id": "8949929247047",
+    "product_price_after": 69.9,
+    "product_price_before": 89.9,
+    "product_discount": 22,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44403-satin-offshoulder-dress-ss24-cherry",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44403-CHERRY-P-2_grande.jpg?v=1710493862",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "CHERRY"
+    ]
+  },
+  {
+    "product_name": "VESTIDO LUREX NUDO",
+    "product_id": "8949928919367",
+    "product_price_after": 49.9,
+    "product_price_before": 79.9,
+    "product_discount": 38,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44392-lurex-knot-jersey-dress-ss24-olive",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44392-OLIVE-P-1_grande.jpg?v=1715153670",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "OLIVE"
+    ]
+  },
+  {
+    "product_name": "VESTIDO BORDADO HOMBRO DESCUBIERTO",
+    "product_id": "9137352507719",
+    "product_price_after": 69.9,
+    "product_price_before": 89.9,
+    "product_discount": 22,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/bbcstudio24-44403-satin-offshoulder-dress-ss24-cherry",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/BBC-44403-CHERRY-1_grande.jpg?v=1712048740",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "CHERRY"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI DETALLE ESPALDA",
+    "product_id": "8949933408583",
+    "product_price_after": 44.9,
+    "product_price_before": 89.9,
+    "product_discount": 50,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44538-fila-open-back-dress-ss24-pink",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44538-PINK-P-4_grande.jpg?v=1716547567",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "PINK"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI PRINT LAZADA TRASERA",
+    "product_id": "9083683832135",
+    "product_price_after": 64.9,
+    "product_price_before": 99.9,
+    "product_discount": 35,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/50507-fucsia-dress-ss24-fucsia",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/50507-FUCSIA-P-1_grande.jpg?v=1713430549",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "S",
+      "M"
+    ],
+    "colors": [
+      "FUCSIA"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI PUNTO CANALÉ",
+    "product_id": "8949931639111",
+    "product_price_after": 54.9,
+    "product_price_before": 89.9,
+    "product_discount": 39,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44500-square-knit-dress-ss24-terracotta",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44500-TERRACOTTA-P-1_grande.jpg?v=1706274596",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "TERRACOTTA"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MIDI BORDADOS",
+    "product_id": "8949929050439",
+    "product_price_after": 69.9,
+    "product_price_before": 89.9,
+    "product_discount": 22,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44399-lace-guipur-dress-ss24-ecru",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44399-ECRU-P-2_grande.jpg?v=1710493953",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "ECRU"
+    ]
+  },
+  {
+    "product_name": "VESTIDO SLIP FRUNCES",
+    "product_id": "8949943664967",
+    "product_price_after": 59.9,
+    "product_price_before": 69.9,
+    "product_discount": 14,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/46082-slip-dress-ss24-olive",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/46082-OLIVE-P-1_grande.jpg?v=1710175344",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "OLIVE"
+    ]
+  },
+  {
+    "product_name": "VESTIDO PUNTO CANALÉ ABERTURAS",
+    "product_id": "8949929148743",
+    "product_price_after": 79.9,
+    "product_price_before": 99.9,
+    "product_discount": 20,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44396-open-stripes-knit-dress-ss24-orangestripes",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44396-ORANGESTRIPES-P-1_grande.jpg?v=1705660105",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "ORANGE STRIPES"
+    ]
+  },
+  {
+    "product_name": "VESTIDO CROCHET DETALLE FLECOS",
+    "product_id": "8949929115975",
+    "product_price_after": 69.9,
+    "product_price_before": 89.9,
+    "product_discount": 22,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44394-crochet-black-dress-ss24-black",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44394-BLACK-P-1_grande.jpg?v=1708440344",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "M"
+    ],
+    "colors": [
+      "BLACK"
+    ]
+  },
+  {
+    "product_name": "VESTIDO MINI SATINADO ARRUGADO",
+    "product_id": "8949937766727",
+    "product_price_after": 39.9,
+    "product_price_before": 79.9,
+    "product_discount": 50,
+    "product_brand": "scalperscompany",
+    "product_page_url": "https://scalperscompany.com/products/44640-saten-crinkle-short-dress-ss24-darknavy",
+    "product_image_url": "https://scalperscompany.com/cdn/shop/files/44640-DARKNAVY-P-1_grande.jpg?v=1715079038",
+    "cloth_type": "Vestido",
+    "sizes": [
+      "L",
+      "S",
+      "XS",
+      "M"
+    ],
+    "colors": [
+      "DARK NAVY"
+    ]
+  }
+]
