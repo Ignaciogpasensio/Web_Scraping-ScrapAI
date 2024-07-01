@@ -20,7 +20,7 @@ def scrape_data(category):
     file_path = os.path.join(current_directory, 'find.json')
     with open(file_path, 'w') as f:
         json.dump(data, f)
-
+    print(file_path)
     return file_path  # Devolver el path del archivo creado
 
 if __name__ == '__main__':
