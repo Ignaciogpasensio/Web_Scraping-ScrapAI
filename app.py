@@ -1,6 +1,7 @@
 import streamlit as st
 import subprocess
 import json
+import requests
 
 # Function to run scrap.py with arguments
 def run_scraping(category, min_price, max_price, min_discount, max_discount):
@@ -17,12 +18,19 @@ def run_scraping(category, min_price, max_price, min_discount, max_discount):
 
     subprocess.run(command)
 
-# Function to load and format JSON data
+# Function to load and format JSON data from GitHub
 def load_data(category):
-    filename = f'search.json'
-    with open(filename, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
+    # GitHub raw file URL
+    github_url = f'https://raw.githubusercontent.com/mom01/Simple/main/search.json'
+
+    # Fetch data from GitHub
+    response = requests.get(github_url)
+    if response.status_code == 200:
+        data = response.json()
+    else:
+        st.error(f'Failed to fetch data: {response.status_code} - {response.reason}')
+        data = []
+
     # Iterate through products and format sizes and colors
     for product in data:
         product['sizes'] = '/'.join(product['sizes'])
@@ -194,18 +202,18 @@ def main():
     """, unsafe_allow_html=True)
 
     # Sidebar - Main Category selection
-    main_category = st.sidebar.selectbox('Selecciona la Categoría', list(categories.keys()))
+    main_category = st.sidebar.selectbox('Select Main Category', list(categories.keys()))
 
     # Sidebar - Subcategory selection based on main category
-    subcategory = st.sidebar.selectbox(f'¿Qué gama de {main_category} desea?', categories[main_category])
+    subcategory = st.sidebar.selectbox(f'Choose {main_category} Range', categories[main_category])
 
     # Price range slider
-    price_range = st.sidebar.slider('Seleccione el rango de precios que está dispuesto a pagar', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
+    price_range = st.sidebar.slider('Select Price Range', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
     min_price = price_range[0]
     max_price = price_range[1]
 
     # Discount range slider
-    discount_range = st.sidebar.slider('Seleccione el rango de descuento que le interesa', min_value=0, max_value=100, value=(0, 100), step=1)
+    discount_range = st.sidebar.slider('Select Discount Range', min_value=0, max_value=100, value=(0, 100), step=1)
     min_discount = discount_range[0]
     max_discount = discount_range[1]
 
@@ -213,11 +221,11 @@ def main():
     st.markdown('<p class="title">ScrapAI</p>', unsafe_allow_html=True)
 
     if st.sidebar.button('SCRAPE'):
-        with st.spinner('Bichendo ofertas...'):
+        with st.spinner('Fetching Offers...'):
             run_scraping(subcategory, min_price, max_price, min_discount, max_discount)
 
     # Display scraped product data
-    if st.sidebar.checkbox('Mostrar productos'):
+    if st.sidebar.checkbox('Show Products'):
         st.subheader(f'{subcategory_names[subcategory]}')
         data = load_data(subcategory)
 
@@ -238,7 +246,7 @@ def main():
 
             # Filter products based on price and discount range
             if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
-               cols[index % 3].markdown(f"""
+                cols[index % 3].markdown(f"""
                 <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
                     <div class="product-container">
                         <div class="tooltip">
