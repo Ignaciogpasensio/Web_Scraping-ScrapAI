@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 import json
 import argparse
 import re
-import subprocess
 
 base_url = 'https://es.scalperscompany.com'
 
@@ -136,34 +135,6 @@ def scrape_products_two(skirts_url):
 
     return products_data_two
 
-# Function to run scrap.py with arguments
-def run_scraping(category, min_price, max_price, min_discount, max_discount):
-    command = ['python', 'app.py', '--category', category]
-
-    if min_price is not None:
-        command.extend(['--min_price', str(min_price)])
-    if max_price is not None:
-        command.extend(['--max_price', str(max_price)])
-    if min_discount is not None:
-        command.extend(['--min_discount', str(min_discount)])
-    if max_discount is not None:
-        command.extend(['--max_discount', str(max_discount)])
-
-    subprocess.run(command)
-
-# Function to load and format JSON data
-def load_data(category):
-    filename = f'search.json'
-    with open(filename, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    # Iterate through products and format sizes and colors
-    for product in data:
-        product['sizes'] = '/'.join(product['sizes'])
-        product['colors'] = '/'.join(product['colors'])
-
-    return data
-
 # Mapping dictionary for subcategory display names
 subcategory_names = {
     'vestidos_monos': 'Vestidos & Monos',
@@ -231,15 +202,46 @@ def main():
     min_discount = st.sidebar.number_input('Descuento mínimo', value=0)
     max_discount = st.sidebar.number_input('Descuento máximo', value=100)
 
+    internal_data = {}
+
     if st.sidebar.button('Ejecutar scraping'):
-        run_scraping(subcategory_key, min_price, max_price, min_discount, max_discount)
+        products_data = scrape_products(skirts_url)
+        products_data_two = scrape_products_two(skirts_url)
+
+        for product in products_data:
+            product_id = product.get('product_id')
+            internal_data[product_id] = {
+                'product_name': product.get('product_name', ''),
+                'product_price_after': product.get('product_price_after', 0),
+                'product_price_before': product.get('product_price_before', 0),
+                'product_discount': product.get('product_discount', 0),
+                'product_brand': product.get('product_brand', ''),
+                'product_page_url': product.get('product_page_url', ''),
+                'product_image_url': product.get('product_image_url', '')
+            }
+
+        for product in products_data_two:
+            product_id = product.get('product_id')
+            if product_id in internal_data:
+                internal_data[product_id]['sizes'] = product.get('sizes', [])
+                internal_data[product_id]['colors'] = product.get('colors', [])
+
         st.success('Scraping completado!')
 
     if st.sidebar.checkbox('Ver productos'):
-        data = load_data(subcategory_key)
         st.write(f'Datos cargados correctamente de la subcategoría {subcategory_names.get(subcategory_key, subcategory_key)}:')
-        st.write(data)
+        for product_id, product_data in internal_data.items():
+            st.write(f'ID: {product_id}')
+            st.write(f'Nombre: {product_data.get("product_name")}')
+            st.write(f'Precio (Después): {product_data.get("product_price_after")}')
+            st.write(f'Precio (Antes): {product_data.get("product_price_before")}')
+            st.write(f'Descuento: {product_data.get("product_discount")}%')
+            st.write(f'Marca: {product_data.get("product_brand")}')
+            st.write(f'URL: {product_data.get("product_page_url")}')
+            st.write(f'Imagen: {product_data.get("product_image_url")}')
+            st.write(f'Tallas: {", ".join(product_data.get("sizes", []))}')
+            st.write(f'Colores: {", ".join(product_data.get("colors", []))}')
+            st.write('---')
 
 if __name__ == "__main__":
     main()
-
