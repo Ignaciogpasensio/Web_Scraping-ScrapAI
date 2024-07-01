@@ -81,80 +81,230 @@ def scrape_products(category_url):
 
     return products_data
 
+# Mapping dictionary for subcategory display names
+subcategory_names = {
+    'vestidos_monos': 'Vestidos & Monos',
+    'faldas': 'Faldas',
+    'camisas': 'Camisas',
+    'camisetas': 'Camisetas',
+    'tops': 'Tops',
+    'sudaderas': 'Sudaderas',
+    'brazers_chalecos': 'Brazers & Chalecos',
+    'pantalones': 'Pantalones',
+    'jeans': 'Jeans',
+    'bermudas_shorts': 'Bermudas & Shorts',
+    'chaquetas_trench': 'Chaquetas & Trenchs',
+    'jerseis_cardigan': 'Jerséis y Cárdigans',
+    'punto': 'Punto',
+    'total_look': 'Total Look',
+    'pijamas': 'Pijamas',
+    'bikinis_bañadores': 'Bikinis & Bañadores',
+    'athleisure': 'Athleisure',
+    'sneakers': 'Sneakers',
+    'sandalias': 'Sandalias',
+    'zapatos_tacon': 'Zapatos de Tacón',
+    'alpargatas_chanclas': 'Alpargatas & Chanclas',
+    'zapatos_planos': 'Zapatos Planos',
+    'bolsos_piel': 'Bolsos de Piel',
+    'bolso_nylon': 'Bolsos de Nylon',
+    'bandoleras': 'Bandoleras',
+    'capazos': 'Capazos',
+    'bolsos_rafia': 'Bolsos de Rafia',
+    'bolsos_mini': 'Bolsos Mini',
+    'bolsos_hombro': 'Bolsos de Hombro',
+    'neceseres': 'Neceseres',
+    'fundas_estuches': 'Fundas & Estuches',
+    'toallas': 'Toallas',
+    'gorras_sombreros': 'Gorras y Sombreros',
+    'carteras': 'Carteras',
+    'calcetines': 'Calcetines',
+    'cinturones': 'Cinturones',
+    'bisuteria': 'Bisutería',
+    'llaveros': 'Llaveros',
+    'gafas': 'Gafas',
+    'accesorios_movil': 'Accesorios para Móvil',
+    'fragancias': 'Fragancias'
+}
+
+# Streamlit app
 def main():
-    st.title("Scalpers Product Scraper")
-
-    category_options = [
-        'vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas',
-        'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench',
-        'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores',
-        'athleisure', 'sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas',
-        'zapatos_planos', 'bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos',
-        'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches',
-        'toallas', 'gorras_sombreros', 'carteras', 'joyas', 'bufandas_fulares',
-        'cinturones', 'gafas', 'perfumeria', 'libros', 'novedades', 'outlet'
-    ]
-
-    selected_category = st.selectbox("Select a product category", category_options)
-
-    category_map = {
-        'vestidos_monos': '/collections/mujer-nueva-coleccion-ropa-vestidos-y-monos-2086',
-        'faldas': '/collections/mujer-nueva-coleccion-ropa-faldas-2060',
-        'camisas': '/collections/mujer-nueva-coleccion-ropa-camisas-y-blusas-2048',
-        'camisetas': '/collections/mujer-nueva-coleccion-ropa-camisetas-y-tops-2054',
-        'tops': '/collections/mujer-nueva-coleccion-ropa-tops-2135',
-        'sudaderas': '/collections/mujer-nueva-coleccion-ropa-sudaderas-2082',
-        'brazers_chalecos': '/collections/mujer-nueva-coleccion-ropa-americanas-2038',
-        'pantalones': '/collections/mujer-nueva-coleccion-ropa-pantalones-2072',
-        'jeans': '/collections/mujer-nueva-coleccion-ropa-pantalones-vaqueros-2078',
-        'bermudas_shorts': '/collections/mujer-nueva-coleccion-ropa-bermudas-shorts-2047',
-        'chaquetas_trench': '/collections/mujer-nueva-coleccion-ropa-abrigos-y-chaquetas-2034',
-        'jerseis_cardigan': '/collections/mujer-nueva-coleccion-ropa-jerseis-y-cardigans-2067',
-        'punto': '/collections/mujer-nueva-coleccion-ropa-punto-2141',
-        'total_look': '/collections/mujer-total-look-2120',
-        'pijamas': '/collections/mujer-nueva-coleccion-ropa-pijamas-2081',
-        'bikinis_bañadores': '/collections/mujer-nueva-coleccion-ropa-banadores-y-bikinis-2042',
-        'athleisure': '/collections/mujer-adrenaline-ropa-deportiva-2098',
-        'sneakers': '/collections/mujer-nueva-coleccion-calzado-sneakers-2029',
-        'sandalias': '/collections/mujer-nueva-coleccion-calzado-sandalias-2028',
-        'zapatos_tacon': '/collections/mujer-nueva-coleccion-calzado-zapatos-tacon-2031',
-        'alpargatas_chanclas': '/collections/mujer-nueva-coleccion-calzado-alpargatas-2032',
-        'zapatos_planos': '/collections/mujer-nueva-coleccion-calzado-zapatos-planos-2030',
-        'bolsos_piel': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-piel-2012',
-        'bolso_nylon': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-nylon-2124',
-        'bandoleras': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-bandoleras-2006',
-        'capazos': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-capazo-2008',
-        'bolsos_rafia': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-rafia-2131',
-        'bolsos_mini': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-mini-2125',
-        'bolsos_hombro': '/collections/mujer-nueva-coleccion-bolsos-hombro',
-        'neceseres': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-neceser-2011',
-        'fundas_estuches': '/collections/mujer-nueva-coleccion-fundas',
-        'toallas': '/collections/mujer-nueva-coleccion-accesorios-toallas-2606',
-        'gorras_sombreros': '/collections/mujer-nueva-coleccion-accesorios-gorros-y-guantes-2018',
-        'carteras': '/collections/mujer-nueva-coleccion-accesorios-carteras-2017',
-        'joyas': '/collections/mujer-nueva-coleccion-accesorios-bisuteria-y-joyeria-2014',
-        'bufandas_fulares': '/collections/mujer-nueva-coleccion-accesorios-bufandas-y-fulares-2016',
-        'cinturones': '/collections/mujer-nueva-coleccion-accesorios-cinturones-2013',
-        'gafas': '/collections/mujer-nueva-coleccion-accesorios-gafas-de-sol-2015',
-        'perfumeria': '/collections/mujer-nueva-coleccion-perfumeria-2069',
-        'libros': '/collections/mujer-nueva-coleccion-libros-2595',
-        'novedades': '/collections/novedades-mujer-100001',
-        'outlet': '/collections/mujer-liquidacion-2134'
+    categories = {
+        'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
+        'Calzado': ['sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas', 'zapatos_planos'],
+        'Bolsos': ['bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos', 'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches'],
+        'Accesorios': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
     }
 
-    category_url = base_url + category_map[selected_category]
-    products_data = scrape_products(category_url)
+    st.markdown("""
+    <style>
+    .sidebar .sidebar-content {
+        background-color: white !important;
+        color: black !important;
+        padding: 20px; /* Adds padding inside the sidebar */
+        border-right: 2px solid #ccc; /* Adds a border on the right side of the sidebar */
+        border-bottom: 1px solid #ccc; /* Adds a bottom border for separation */
+        border-radius: 0 8px 8px 0; /* Rounded border on the right */
+    }
 
-    for product in products_data:
-        st.markdown(f"## {product['product_name']}")
-        st.image(product['product_image_url'], caption=product['product_name'], use_column_width=True)
-        st.write(f"**Brand:** {product['product_brand']}")
-        st.write(f"**Current Price:** €{product['product_price_after']}")
-        st.write(f"**Previous Price:** €{product['product_price_before']}")
-        st.write(f"**Discount:** {product['product_discount']}%")
-        st.write(f"**Product Page URL:** [{product['product_page_url']}]({product['product_page_url']})")
-        st.write("---")
+    .sidebar select {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc !important; /* Adjust border color and style as needed */
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 14px;
+        width: 100%; /* Adjust width to fit your layout */
+        box-shadow: none !important;
+        transition: border-color 0.3s ease; /* Smooth transition on hover */
+    }
+
+    .sidebar select:hover {
+        border-color: #007bff !important; /* Border color on hover */
+    }
+
+    .sidebar .stButton {
+        
+        background-color: #007bff !important; /* Button background color */
+        color: white !important;
+        border-color: #007bff !important; /* Button border color */
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-weight: bold;
+        margin-top: 10px; /* Adds top margin */
+    }
+    .sidebar .stButton:hover {
+        background-color: #0056b3 !important; /* Button background color on hover */
+        border-color: #0056b3 !important; /* Button border color on hover */
+    }
+    .title {
+        font-family: 'Arial', sans-serif;
+        font-size: 80px;
+        font-weight: bold;
+        color: #000000;
+        text-align: center; /* Center align the title */
+        margin-top: 0px;
+        margin-bottom: 20px; /* Optional: Add some bottom margin */
+    }
+    .product-container {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        margin-bottom: 20px; /* Adjust spacing between products */
+    }
+    .product-container img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.2s, opacity 0.2s;
+        position: relative; /* Ensure discount text is positioned relative to the image */
+    }
+    .product-container:hover img {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    .discount-text {
+        position: absolute;
+        top: 50%; /* Center discount text vertically */
+        left: 50%; /* Center discount text horizontally */
+        transform: translate(-50%, -50%); /* Adjust for centering */
+        color: black; /* Text color */
+        font-size: 4em; /* Double size: 2em was previous size */
+        font-weight: bold;
+        z-index: 1;
+    }
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        z-index: 0; /* Ensure tooltips are behind the discount text */
+    }
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: black;
+        color: white;
+        font-size: 1em;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+        position: absolute;
+        z-index: 2; /* Ensure tooltips are above other elements */
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+    .tooltip .tooltiptext .smaller-text {
+        font-size: 0.7em; /* Adjust the font size smaller */
+        line-height: 1.5; /* Adjust the line height */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Sidebar - Main Category selection
+    main_category = st.sidebar.selectbox('Selecciona la Categoría', list(categories.keys()))
+
+    # Sidebar - Subcategory selection based on main category
+    subcategory = st.sidebar.selectbox(f'¿Qué gama de {main_category} desea?', categories[main_category])
+
+    # Price range slider
+    price_range = st.sidebar.slider('Seleccione el rango de precios que está dispuesto a pagar', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
+    min_price = price_range[0]
+    max_price = price_range[1]
+
+    # Discount range slider
+    discount_range = st.sidebar.slider('Seleccione el rango de descuento que le interesa', min_value=0, max_value=100, value=(0, 100), step=1)
+    min_discount = discount_range[0]
+    max_discount = discount_range[1]
+
+    # Custom title with font style and center alignment
+    st.markdown('<p class="title">ScrapAI</p>', unsafe_allow_html=True)
+
+    if st.sidebar.button('SCRAPE'):
+        with st.spinner('Buscando ofertas...'):
+            category_url = base_url + category_map[subcategory]
+            products_data = scrape_products(category_url)
+
+    # Display scraped product data
+    if st.sidebar.checkbox('Mostrar productos'):
+        st.subheader(f'{subcategory_names[subcategory]}')
+
+        # Create columns for product display
+        cols = st.columns(3)
+        for index, product in enumerate(products_data):
+            discount_text = f"-{product['product_discount']}%"
+            image_url = product['product_image_url']
+            product_page_url = product['product_page_url']
+            product_name = product['product_name']
+            product_brand = product['product_brand']
+            product_price_before = product['product_price_before']
+            product_price_after = product['product_price_after']
+            product_id = product['product_id']
+
+            # Filter products based on price and discount range
+            if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
+               cols[index % 3].markdown(f"""
+                <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="product-container">
+                        <div class="tooltip">
+                            <img src="{image_url}" alt="{product_name}"/>
+                            <span class="discount-text">
+                                {discount_text}
+                            </span>
+                            <span class="tooltiptext">
+                                <strong>{product_name}</strong><br>
+                                <s>{product_price_before}€</s><br>
+                                <strong>{product_price_after}€</strong><br>
+                                <div class="smaller-text">Brand: {product_brand}<br>
+                                ID: {product_id}</div>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                """, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
-
