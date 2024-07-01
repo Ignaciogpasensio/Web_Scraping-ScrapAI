@@ -3,19 +3,20 @@ from bs4 import BeautifulSoup
 import json
 import argparse
 import re
-import os
 
 base_url = 'https://es.scalperscompany.com'
-repo_path = 'Ignaciogpasensio/Web_Scraping-ScrapAI'
 
 def extract_product_data(product_url):
     data_dict = {}
     response = requests.get(product_url)
+
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         script_tag = soup.find('script', id='viewed_product')
+
         if script_tag:
             script_content = script_tag.string
+
             name_match = re.search(r'Name:\s*"([^"]+)"', script_content)
             price_match = re.search(r'Price:\s*"([^"]+)"', script_content)
             compare_at_price_match = re.search(r'CompareAtPrice:\s*"([^"]+)"', script_content)
@@ -23,61 +24,78 @@ def extract_product_data(product_url):
             brand_match = re.search(r'Brand:\s*"([^"]+)"', script_content)
             url_match = re.search(r'    URL:\s*"([^"]+)"', script_content)
             image_match = re.search(r'ImageURL:\s*"([^"]+)"', script_content)
+
             if name_match:
                 product_name = name_match.group(1)
                 data_dict['product_name'] = product_name
+
             if product_id_match:
                 product_id = product_id_match.group(1)
                 data_dict['product_id'] = product_id
+
             if price_match:
                 price = price_match.group(1)
                 price = float(price.replace("€", "").replace(",", "."))
                 data_dict['product_price_after'] = price
+
             if compare_at_price_match:
                 compare_at_price = compare_at_price_match.group(1)
                 compare_at_price = float(compare_at_price.replace("€", "").replace(",", "."))
                 data_dict['product_price_before'] = compare_at_price
+
                 discount = compare_at_price - price
                 discount_percentage = (discount / compare_at_price) * 100
                 discount_percentage = int(round(discount_percentage))
                 data_dict['product_discount'] = discount_percentage
+
             if brand_match:
                 product_brand = brand_match.group(1)
                 data_dict['product_brand'] = product_brand
+
             if url_match:
                 product_page_url = url_match.group(1)
                 data_dict['product_page_url'] = product_page_url
             else:
                 data_dict['product_page_url'] = "URL not found"
+
             if image_match:
                 product_image_url = image_match.group(1)
                 data_dict['product_image_url'] = product_image_url
+
     return data_dict
 
 def extract_product_data_two(product, meta_data):
     data_dict_two = {}
+
     product_id = product.get('id')
     product_id = str(product_id)
     data_dict_two["product_id"] = product_id
+
     variants = product.get('variants', [])
+
     data_dict_two['cloth_type'] = product.get('type', 'No type')
+
     sizes = set()
     for variant in variants:
         size = variant.get('public_title')
         if size:
             sizes.add(size.split('/')[1].strip())
     data_dict_two['sizes'] = list(sizes)
+
+
     colors = set()
     for variant in variants:
         color = variant.get('public_title')
         if color:
             colors.add(color.split('/')[0].strip())
     data_dict_two['colors'] = list(colors)
+
     return data_dict_two
 
 def scrape_products(skirts_url):
     products_data = []
     response = requests.get(skirts_url)
+
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         products = soup.select('a[href*="/products/"]')
@@ -89,11 +107,13 @@ def scrape_products(skirts_url):
                     products_data.append(product_data)
             except Exception as e:
                 continue
+
     return products_data
 
 def scrape_products_two(skirts_url):
     products_data_two = []
     response = requests.get(skirts_url)
+
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         script_tag = soup.find('script', string=lambda text: text and 'var meta = ' in text)
@@ -108,6 +128,7 @@ def scrape_products_two(skirts_url):
                         products_data_two.append(product_data_two)
                     except Exception as e:
                         continue
+
     return products_data_two
 
 def main(args):
@@ -154,18 +175,23 @@ def main(args):
         'accesorios_movil': '/collections/nueva-coleccion-accesorios-accesorios-movil-0007',
         'fragancias': '/collections/mujer-nueva-coleccion-accesorios-fragancias-2016'
     }
+
     if args.category in category_map:
         category_url = base_url + category_map[args.category]
         products_data = scrape_products(category_url)
         products_data_two = scrape_products_two(category_url)
         products_data_dict = {product['product_id']: product for product in products_data}
+        
         for product_two in products_data_two:
             if 'colors' in product_two and 'sizes' in product_two:
                 product_id = product_two['product_id']
                 if product_id in products_data_dict:
                     products_data_dict[product_id].update(product_two)
+
+        # Filter by price range
         min_price = args.min_price
         max_price = args.max_price
+
         if min_price is not None and max_price is not None:
             filtered_products_data = []
             for product in products_data_dict.values():
@@ -174,8 +200,11 @@ def main(args):
                     if min_price <= price_after <= max_price:
                         filtered_products_data.append(product)
             products_data = filtered_products_data
+
+        # Filter by discount range
         min_discount = args.min_discount
         max_discount = args.max_discount
+
         if min_discount is not None and max_discount is not None:
             filtered_products_data = []
             for product in products_data:
@@ -184,19 +213,15 @@ def main(args):
                     if min_discount <= discount <= max_discount:
                         filtered_products_data.append(product)
             products_data = filtered_products_data
+
+        # Filter out products without 'colors'
         filtered_products_data = [product for product in products_data if 'colors' in product]
 
         output_file = 'search.json'
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(filtered_products_data, f, ensure_ascii=False, indent=2)
+
         print(f'Successfully scraped {len(filtered_products_data)} products from category "{args.category}" in the price range {min_price}€ - {max_price}€ and discount range {min_discount}% - {max_discount}%. Data saved to {output_file}')
-        try:
-            os.chdir('Ignaciogpasensio/Web_Scraping-ScrapAI')  # Change directory to your repository
-            subprocess.run(['git', 'pull'])  # Pull latest changes (if any)
-            subprocess.run(['git', 'add', 'search.json'])
-            subprocess.run(['git', 'commit', '-m', 'Update search.json'])
-            subprocess.run(['git', 'push'])
-            print("Successfully pushed changes to GitHub.")
     else:
         print(f'Invalid category "{args.category}". Please choose one of: faldas, vestidos_monos, sneakers, bolsos, toallas.')
 
