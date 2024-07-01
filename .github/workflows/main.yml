@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt  # Asegúrate de que 'requirements.txt' esté en tu repositorio
 
     - name: Execute scrape.py
-      run: python scrape.py  # Ejecuta scrape.py
+      run: python scrap.py  # Ejecuta scrape.py
 
     - name: Execute app.py
       run: python app.py  # Ejecuta app.py
