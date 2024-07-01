@@ -91,8 +91,6 @@ def main():
         color: black !important;
         padding: 20px; /* Adds padding inside the sidebar */
         border-right: 2px solid #ccc; /* Adds a border on the right side of the sidebar */
-        border-bottom: 1px solid #ccc; /* Adds a bottom border for separation */
-        border-radius: 0 8px 8px 0; /* Rounded border on the right */
     }
 
     .sidebar select {
@@ -100,36 +98,30 @@ def main():
         color: black !important;
         border: 1px solid #ccc !important; /* Adjust border color and style as needed */
         border-radius: 4px;
-        padding: 10px;
+        padding: 8px;
         font-size: 14px;
-        width: 100%; /* Adjust width to fit your layout */
-        box-shadow: none !important;
-        transition: border-color 0.3s ease; /* Smooth transition on hover */
-    }
-
-    .sidebar select:hover {
-        border-color: #007bff !important; /* Border color on hover */
+        width: 100%; /* Optional: Adjust width to fit your layout */
+        box-shadow: none !important; /* Optional: Remove box shadow */
     }
 
     .sidebar .stButton {
-        
-        background-color: #007bff !important; /* Button background color */
+        background-color: #007bff !important;
         color: white !important;
-        border-color: #007bff !important; /* Button border color */
+        border-color: #007bff !important;
         border-radius: 4px;
         padding: 10px 20px;
         font-weight: bold;
-        margin-top: 10px; /* Adds top margin */
     }
+
     .sidebar .stButton:hover {
-        background-color: #0056b3 !important; /* Button background color on hover */
-        border-color: #0056b3 !important; /* Button border color on hover */
+        background-color: #0056b3 !important;
+        border-color: #0056b3 !important;
     }
     .title {
         font-family: 'Arial', sans-serif;
         font-size: 80px;
         font-weight: bold;
-        color: #000000;
+        color: #333333;
         text-align: center; /* Center align the title */
         margin-top: 0px;
         margin-bottom: 20px; /* Optional: Add some bottom margin */
@@ -181,6 +173,7 @@ def main():
         margin-left: -100px;
         opacity: 0;
         transition: opacity 0.3s;
+        pointer-events: none; /* Ensure tooltip does not interfere with mouse events */
     }
     .tooltip:hover .tooltiptext {
         visibility: visible;
@@ -192,6 +185,27 @@ def main():
     }
     </style>
     """, unsafe_allow_html=True)
+
+    # JavaScript to adjust tooltip position dynamically
+    st.markdown(
+        """
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltips = document.querySelectorAll('.tooltip');
+            
+            tooltips.forEach(tooltip => {
+                const tooltipText = tooltip.querySelector('.tooltiptext');
+                const rect = tooltip.getBoundingClientRect();
+                
+                if (rect.top < 0) {
+                    tooltipText.style.top = '100%';
+                }
+            });
+        });
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
 
     # Sidebar - Main Category selection
     main_category = st.sidebar.selectbox('Selecciona la Categoría', list(categories.keys()))
