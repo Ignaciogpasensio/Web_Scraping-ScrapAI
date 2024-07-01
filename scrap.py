@@ -1,47 +1,23 @@
 # scrap.py
-
-import sys
-import requests
-from bs4 import BeautifulSoup
 import json
 
-def get_category_count(category):
-    url = 'https://es.scalperscompany.com'
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Check for HTTP errors
-    except requests.RequestException as e:
-        print(f"Error fetching the URL: {e}")
-        sys.exit(1)
-
-    soup = BeautifulSoup(response.content, 'html.parser')
-
-    # Example selectors, adjust these according to the actual website structure
-    if category == 'jeans':
-        elements = soup.find_all(class_='category-jeans')
-    elif category == 'shirts':
-        elements = soup.find_all(class_='category-shirts')
-    else:
-        print(f"Invalid category: {category}")
-        sys.exit(1)
-    
-    return len(elements)
-
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: python scrap.py <category>")
-        sys.exit(1)
-    
-    category = sys.argv[1]
-    count = get_category_count(category)
-    
-    result = {
+def scrape_data(category):
+    # Aquí iría tu lógica de scraping
+    # En este ejemplo, solo creamos un diccionario de ejemplo
+    data = {
         'category': category,
-        'count': count
+        'items': [
+            {'name': 'Item 1', 'price': '$19.99'},
+            {'name': 'Item 2', 'price': '$29.99'},
+            {'name': 'Item 3', 'price': '$39.99'}
+        ]
     }
     
+    # Guardar los datos en un archivo JSON
     with open('find.json', 'w') as f:
-        json.dump(result, f)
+        json.dump(data, f)
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    import sys
+    category = sys.argv[1]  # Obtener la categoría del argumento de línea de comandos
+    scrape_data(category)
