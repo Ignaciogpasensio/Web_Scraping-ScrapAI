@@ -1,29 +1,21 @@
 import streamlit as st
-import subprocess
 import json
 import os
 
-# Título y selección de categoría
-st.title('Aplicación de Selección de Categoría')
-category = st.selectbox('Selecciona una categoría', ['jeans', 'shirts'])
+# Título y selección de nombre para el archivo JSON
+st.title('Aplicación para Guardar JSON en Repositorio')
+json_name = st.text_input('Nombre del archivo JSON (sin la extensión .json):')
 
-# Botón para llamar a scrap.py
-if st.button('Find'):
-    # Llamada a scrap.py
-    st.write(f"Ejecutando scrap.py para la categoría: {category}")
+# Botón para guardar el JSON
+if st.button('Guardar JSON'):
+    data = {"message": "Hola, este es un JSON de ejemplo."}  # Datos de ejemplo
     
-    # Ejecutar scrap.py y obtener el path del archivo creado
-    result = subprocess.run(['python', 'scrap.py', category], capture_output=True, text=True)
-    file_path = result.stdout.strip()  # Obtener el path del archivo creado
+    # Obtener el directorio del repositorio
+    repo_path = os.getenv('GITHUB_WORKSPACE', '/Ignaciogpasensio/Web_Scraping-ScrapAI/')
     
-    # Mostrar el path en Streamlit
-    st.write(f"Intentando leer 'find.json' desde: {file_path}")
+    # Guardar el archivo JSON en el directorio del repositorio
+    file_path = os.path.join(repo_path, f'{json_name}.json')
+    with open(file_path, 'w') as f:
+        json.dump(data, f)
     
-    # Mostrar contenido de find.json si existe
-    try:
-        with open(file_path, 'r') as f:
-            data = json.load(f)
-            st.write("Contenido de 'find.json':")
-            st.write(data)
-    except FileNotFoundError:
-        st.write(f"No se encontró el archivo 'find.json' en {file_path}")
+    st.success(f'Archivo {json_name}.json guardado en el repositorio.')
