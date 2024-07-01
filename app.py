@@ -1,25 +1,15 @@
 import streamlit as st
 import json
 
-# Título de la aplicación
-st.title('Generador de Archivo JSON')
-
-# Datos para el archivo JSON
-data = {
-    "nombre": "Juan",
-    "edad": 30,
-    "ciudad": "Madrid"
-}
-
-# Botón para guardar el JSON
+# Título y botón en la aplicación Streamlit
+st.title('Guardar JSON en Repositorio de GitHub')
 if st.button('Guardar JSON'):
-    # Guardar el archivo JSON
-    with open('data.json', 'w') as f:
-        json.dump(data, f, indent=4)
-    
-    # Mostrar mensaje de éxito
-    st.success("Archivo 'data.json' guardado correctamente en el directorio del repositorio.")
+    # Datos de ejemplo
+    data = {'nombre': 'Juan', 'edad': 30}
 
-    # Mostrar contenido del archivo guardado
-    st.write("Contenido del archivo guardado:")
-    st.write(data)
+    # Guardar el archivo JSON en el mismo directorio
+    file_path = './data.json'
+    with open(file_path, 'w') as f:
+        json.dump(data, f)
+
+    st.write(f"Archivo 'data.json' guardado en: {file_path}")
