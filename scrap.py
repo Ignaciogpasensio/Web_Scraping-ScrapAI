@@ -13,11 +13,11 @@ def scrape_data(category):
         ]
     }
 
-    # Obtener el directorio actual donde se está ejecutando scrap.py
-    current_directory = os.path.dirname(os.path.abspath(__file__))
+    # Definir el directorio donde se desea guardar find.json
+    save_directory = '/Ignaciogpasensio/Web_Scraping-ScrapAI/'
 
-    # Guardar los datos en un archivo JSON
-    file_path = os.path.join(current_directory, 'find.json')
+    # Guardar los datos en un archivo JSON en el directorio especificado
+    file_path = os.path.join(save_directory, 'find.json')
     with open(file_path, 'w') as f:
         json.dump(data, f)
 
