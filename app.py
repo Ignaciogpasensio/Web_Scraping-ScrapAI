@@ -19,10 +19,9 @@ def run_scraping(category, min_price, max_price, min_discount, max_discount):
 
 # Function to load and format JSON data
 def load_data(category):
-    url = 'https://raw.githubusercontent.com/Web_Scraping-ScrapAI/main/search.json'
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
+    filename = f'search.json'
+    with open(filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
     
     # Iterate through products and format sizes and colors
     for product in data:
