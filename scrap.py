@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import json
 import argparse
 import re
-import subprocess
 
 base_url = 'https://es.scalperscompany.com'
 
@@ -132,21 +131,6 @@ def scrape_products_two(skirts_url):
 
     return products_data_two
 
-def save_data_and_update_github(data):
-    output_file = 'search.json'
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-    # Add, commit, and push to GitHub
-    try:
-        subprocess.run(["git", "add", output_file])
-        subprocess.run(["git", "commit", "-m", "Update search.json"])
-        subprocess.run(["git", "push", "origin", "main"])  # Adjust 'main' if you're on another branch
-
-        print("Updated search.json and pushed changes to GitHub successfully.")
-    except Exception as e:
-        print(f"Error pushing to GitHub: {str(e)}")
-
 def main(args):
     category_map = {
         'vestidos_monos': '/collections/mujer-nueva-coleccion-ropa-vestidos-y-monos-2086',
@@ -233,7 +217,11 @@ def main(args):
         # Filter out products without 'colors'
         filtered_products_data = [product for product in products_data if 'colors' in product]
 
-        save_data_and_update_github(filtered_products_data)
+        output_file = 'search.json'
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(filtered_products_data, f, ensure_ascii=False, indent=2)
+
+        print(f'Successfully scraped {len(filtered_products_data)} products from category "{args.category}" in the price range {min_price}€ - {max_price}€ and discount range {min_discount}% - {max_discount}%. Data saved to {output_file}')
     else:
         print(f'Invalid category "{args.category}". Please choose one of: faldas, vestidos_monos, sneakers, bolsos, toallas.')
 
@@ -241,7 +229,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Scrape product data from Scalpers website.')
     parser.add_argument('--category', choices=['vestidos_monos','faldas','camisas','camisetas','tops','sudaderas','brazers_chalecos','pantalones','jeans','bermudas_shorts',
                                                'chaquetas_trench','jerseis_cardigan','punto','total_look','pijamas','bikinis_bañadores','athleisure','sneakers',
-                                               'sandalias','zapatos_tacon','alpargatas_chanclas','zapatos_planos','bolsos_piel','bolso_nylon','bandoleras','capazos',
+                                               'sandalias','zapatos_tacon','alpargatas_chanclas','zapatos_planos','bolsos_piel','bolso_nylon','bandoleras','capazos'
                                                'bolsos_rafia','bolsos_mini','bolsos_hombro','neceseres','fundas_estuches','toallas','gorras_sombreros','carteras',
                                                'calcetines','cinturones','bisuteria','llaveros','gafas','accesorios_movil','fragancias'],
                         help='Category of products to scrape', required=True)
