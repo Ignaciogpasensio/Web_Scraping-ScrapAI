@@ -10,3 +10,4 @@ soupsieve==2.5
 typing-extensions==4.12.2
 urllib3==2.2.1
 Streamline
+requests==2.26.0
