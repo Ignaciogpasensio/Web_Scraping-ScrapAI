@@ -1,21 +1,22 @@
 import streamlit as st
 import json
 
-# Título y botón en la aplicación Streamlit
-st.title('Guardar JSON en Repositorio de GitHub')
-if st.button('Guardar JSON'):
-    # Datos de ejemplo
-    data = {'nombre': 'Juan', 'edad': 30}
+# Crear datos para el JSON
+data = {'message': 'Hola Mundo!'}
+file_path = './data.json'  # Ruta donde se guardará el archivo JSON
 
-    # Guardar el archivo JSON en una ruta relativa
-    file_path = './data.json'
-    try:
-        with open(file_path, 'w') as f:
-            json.dump(data, f)
-        st.write(f"Archivo 'data.json' guardado en: {file_path}")
-    except FileNotFoundError:
-        st.write(f"Error: No se pudo encontrar el directorio o archivo en la ruta: {file_path}")
-    except PermissionError:
-        st.write(f"Error: Permiso denegado para escribir en la ruta: {file_path}")
-    except Exception as e:
-        st.write(f"Error desconocido: {str(e)}")
+# Botón para guardar el JSON
+if st.button('Guardar JSON'):
+    with open(file_path, 'w') as f:
+        json.dump(data, f)
+    st.write(f"Archivo 'data.json' guardado en: {file_path}")
+
+# Mostrar el contenido de data.json si existe
+try:
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+        st.write("Contenido de 'data.json':")
+        st.write(data)
+except FileNotFoundError:
+    st.write(f"No se encontró el archivo 'data.json' en {file_path}")
+
