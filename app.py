@@ -1,10 +1,144 @@
 import streamlit as st
-import subprocess
+import requests
+from bs4 import BeautifulSoup
 import json
+import argparse
+import re
+import subprocess
+
+base_url = 'https://es.scalperscompany.com'
+
+# Function to extract product data from the product URL
+def extract_product_data(product_url):
+    data_dict = {}
+    response = requests.get(product_url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        script_tag = soup.find('script', id='viewed_product')
+
+        if script_tag:
+            script_content = script_tag.string
+
+            name_match = re.search(r'Name:\s*"([^"]+)"', script_content)
+            price_match = re.search(r'Price:\s*"([^"]+)"', script_content)
+            compare_at_price_match = re.search(r'CompareAtPrice:\s*"([^"]+)"', script_content)
+            product_id_match = re.search(r'ProductID:\s*(\d+),', script_content)
+            brand_match = re.search(r'Brand:\s*"([^"]+)"', script_content)
+            url_match = re.search(r'    URL:\s*"([^"]+)"', script_content)
+            image_match = re.search(r'ImageURL:\s*"([^"]+)"', script_content)
+
+            if name_match:
+                product_name = name_match.group(1)
+                data_dict['product_name'] = product_name
+
+            if product_id_match:
+                product_id = product_id_match.group(1)
+                data_dict['product_id'] = product_id
+
+            if price_match:
+                price = price_match.group(1)
+                price = float(price.replace("€", "").replace(",", "."))
+                data_dict['product_price_after'] = price
+
+            if compare_at_price_match:
+                compare_at_price = compare_at_price_match.group(1)
+                compare_at_price = float(compare_at_price.replace("€", "").replace(",", "."))
+                data_dict['product_price_before'] = compare_at_price
+
+                discount = compare_at_price - price
+                discount_percentage = (discount / compare_at_price) * 100
+                discount_percentage = int(round(discount_percentage))
+                data_dict['product_discount'] = discount_percentage
+
+            if brand_match:
+                product_brand = brand_match.group(1)
+                data_dict['product_brand'] = product_brand
+
+            if url_match:
+                product_page_url = url_match.group(1)
+                data_dict['product_page_url'] = product_page_url
+            else:
+                data_dict['product_page_url'] = "URL not found"
+
+            if image_match:
+                product_image_url = image_match.group(1)
+                data_dict['product_image_url'] = product_image_url
+
+    return data_dict
+
+# Function to extract product data from the script tag
+def extract_product_data_two(product, meta_data):
+    data_dict_two = {}
+
+    product_id = product.get('id')
+    product_id = str(product_id)
+    data_dict_two["product_id"] = product_id
+
+    variants = product.get('variants', [])
+
+    data_dict_two['cloth_type'] = product.get('type', 'No type')
+
+    sizes = set()
+    for variant in variants:
+        size = variant.get('public_title')
+        if size:
+            sizes.add(size.split('/')[1].strip())
+    data_dict_two['sizes'] = list(sizes)
+
+    colors = set()
+    for variant in variants:
+        color = variant.get('public_title')
+        if color:
+            colors.add(color.split('/')[0].strip())
+    data_dict_two['colors'] = list(colors)
+
+    return data_dict_two
+
+# Function to scrape products from the category URL
+def scrape_products(skirts_url):
+    products_data = []
+    response = requests.get(skirts_url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        products = soup.select('a[href*="/products/"]')
+        for product in products:
+            try:
+                product_url = base_url + product['href']
+                product_data = extract_product_data(product_url)
+                if product_data:
+                    products_data.append(product_data)
+            except Exception as e:
+                continue
+
+    return products_data
+
+# Function to scrape products using meta data
+def scrape_products_two(skirts_url):
+    products_data_two = []
+    response = requests.get(skirts_url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        script_tag = soup.find('script', string=lambda text: text and 'var meta = ' in text)
+        if script_tag:
+            json_data = re.search(r'var meta = ({.*});', script_tag.string)
+            if json_data:
+                meta_data = json.loads(json_data.group(1))
+                products = meta_data.get('products', [])
+                for product in products:
+                    try:
+                        product_data_two = extract_product_data_two(product, meta_data)
+                        products_data_two.append(product_data_two)
+                    except Exception as e:
+                        continue
+
+    return products_data_two
 
 # Function to run scrap.py with arguments
 def run_scraping(category, min_price, max_price, min_discount, max_discount):
-    command = ['python', 'scrap.py', '--category', category]
+    command = ['python', 'app.py', '--category', category]
 
     if min_price is not None:
         command.extend(['--min_price', str(min_price)])
@@ -22,12 +156,12 @@ def load_data(category):
     filename = f'search.json'
     with open(filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    
+
     # Iterate through products and format sizes and colors
     for product in data:
         product['sizes'] = '/'.join(product['sizes'])
         product['colors'] = '/'.join(product['colors'])
-    
+
     return data
 
 # Mapping dictionary for subcategory display names
@@ -81,184 +215,31 @@ def main():
         'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
         'Calzado': ['sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas', 'zapatos_planos'],
         'Bolsos': ['bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos', 'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches'],
-        'Accesorios': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
+        'Complementos': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
     }
 
-    st.markdown("""
-    <style>
-    .sidebar .sidebar-content {
-        background-color: white !important;
-        color: black !important;
-        padding: 20px; /* Adds padding inside the sidebar */
-        border-right: 2px solid #ccc; /* Adds a border on the right side of the sidebar */
-        border-bottom: 1px solid #ccc; /* Adds a bottom border for separation */
-        border-radius: 0 8px 8px 0; /* Rounded border on the right */
-    }
+    st.title('Scraping de productos de Scalpers')
+    category = st.sidebar.selectbox('Seleccione la categoría', list(categories.keys()))
 
-    .sidebar select {
-        background-color: white !important;
-        color: black !important;
-        border: 1px solid #ccc !important; /* Adjust border color and style as needed */
-        border-radius: 4px;
-        padding: 10px;
-        font-size: 14px;
-        width: 100%; /* Adjust width to fit your layout */
-        box-shadow: none !important;
-        transition: border-color 0.3s ease; /* Smooth transition on hover */
-    }
+    subcategory_key = st.sidebar.selectbox('Seleccione la subcategoría', categories[category])
 
-    .sidebar select:hover {
-        border-color: #007bff !important; /* Border color on hover */
-    }
+    skirts_url = f'https://es.scalperscompany.com/collections/{subcategory_key}'
+    st.write(f'URL de la categoría seleccionada: {skirts_url}')
 
-    .sidebar .stButton {
-        
-        background-color: #007bff !important; /* Button background color */
-        color: white !important;
-        border-color: #007bff !important; /* Button border color */
-        border-radius: 4px;
-        padding: 10px 20px;
-        font-weight: bold;
-        margin-top: 10px; /* Adds top margin */
-    }
-    .sidebar .stButton:hover {
-        background-color: #0056b3 !important; /* Button background color on hover */
-        border-color: #0056b3 !important; /* Button border color on hover */
-    }
-    .title {
-        font-family: 'Arial', sans-serif;
-        font-size: 80px;
-        font-weight: bold;
-        color: #000000;
-        text-align: center; /* Center align the title */
-        margin-top: 0px;
-        margin-bottom: 20px; /* Optional: Add some bottom margin */
-    }
-    .product-container {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-        margin-bottom: 20px; /* Adjust spacing between products */
-    }
-    .product-container img {
-        width: 100%;
-        height: auto;
-        transition: transform 0.2s, opacity 0.2s;
-        position: relative; /* Ensure discount text is positioned relative to the image */
-    }
-    .product-container:hover img {
-        transform: scale(1.05);
-        opacity: 0.8;
-    }
-    .discount-text {
-        position: absolute;
-        top: 50%; /* Center discount text vertically */
-        left: 50%; /* Center discount text horizontally */
-        transform: translate(-50%, -50%); /* Adjust for centering */
-        color: black; /* Text color */
-        font-size: 4em; /* Double size: 2em was previous size */
-        font-weight: bold;
-        z-index: 1;
-    }
-    .tooltip {
-        position: relative;
-        display: inline-block;
-        z-index: 0; /* Ensure tooltips are behind the discount text */
-    }
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 200px;
-        background-color: black;
-        color: white;
-        font-size: 1em;
-        text-align: center;
-        padding: 5px 0;
-        border-radius: 6px;
-        position: absolute;
-        z-index: 2; /* Ensure tooltips are above other elements */
-        bottom: 125%;
-        left: 50%;
-        margin-left: -100px;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-    .tooltip .tooltiptext .smaller-text {
-        font-size: 0.7em; /* Adjust the font size smaller */
-        line-height: 1.5; /* Adjust the line height */
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    min_price = st.sidebar.number_input('Precio mínimo', value=0)
+    max_price = st.sidebar.number_input('Precio máximo', value=9999)
+    min_discount = st.sidebar.number_input('Descuento mínimo', value=0)
+    max_discount = st.sidebar.number_input('Descuento máximo', value=100)
 
-    # Sidebar - Main Category selection
-    main_category = st.sidebar.selectbox('Selecciona la Categoría', list(categories.keys()))
+    if st.sidebar.button('Ejecutar scraping'):
+        run_scraping(subcategory_key, min_price, max_price, min_discount, max_discount)
+        st.success('Scraping completado!')
 
-    # Sidebar - Subcategory selection based on main category
-    subcategory = st.sidebar.selectbox(f'¿Qué gama de {main_category} desea?', categories[main_category])
+    if st.sidebar.checkbox('Ver productos'):
+        data = load_data(subcategory_key)
+        st.write(f'Datos cargados correctamente de la subcategoría {subcategory_names.get(subcategory_key, subcategory_key)}:')
+        st.write(data)
 
-    # Price range slider
-    price_range = st.sidebar.slider('Seleccione el rango de precios que está dispuesto a pagar', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
-    min_price = price_range[0]
-    max_price = price_range[1]
-
-    # Discount range slider
-    discount_range = st.sidebar.slider('Seleccione el rango de descuento que le interesa', min_value=0, max_value=100, value=(0, 100), step=1)
-    min_discount = discount_range[0]
-    max_discount = discount_range[1]
-
-    # Custom title with font style and center alignment
-    st.markdown('<p class="title">ScrapAI</p>', unsafe_allow_html=True)
-
-    if st.sidebar.button('SCRAPE'):
-        with st.spinner('Bichendo ofertas...'):
-            run_scraping(subcategory, min_price, max_price, min_discount, max_discount)
-
-    # Display scraped product data
-    if st.sidebar.checkbox('Mostrar productos'):
-        st.subheader(f'{subcategory_names[subcategory]}')
-        data = load_data(subcategory)
-
-        # Create columns for product display
-        cols = st.columns(3)
-        for index, product in enumerate(data):
-            discount_text = f"-{product['product_discount']}%"
-            image_url = product['product_image_url']
-            product_page_url = product['product_page_url']
-            product_name = product['product_name']
-            product_brand = product['product_brand']
-            cloth_type = product['cloth_type']
-            product_price_before = product['product_price_before']
-            product_price_after = product['product_price_after']
-            product_id = product['product_id']
-            sizes = product['sizes']
-            colors = product['colors']
-
-            # Filter products based on price and discount range
-            if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
-               cols[index % 3].markdown(f"""
-                <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
-                    <div class="product-container">
-                        <div class="tooltip">
-                            <img src="{image_url}" alt="{product_name}"/>
-                            <span class="discount-text">
-                                {discount_text}
-                            </span>
-                            <span class="tooltiptext">
-                                <strong>{product_name}</strong><br>
-                                <s>{product_price_before}€</s><br>
-                                <strong>{product_price_after}€</strong><br>
-                                <div class="smaller-text">Brand: {product_brand}<br>
-                                Sizes: {sizes}<br>
-                                Colors: {colors}<br>
-                                ID: {product_id}</div>
-                            </span>
-                        </div>
-                    </div>
-                </a>
-                """, unsafe_allow_html=True)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
+
