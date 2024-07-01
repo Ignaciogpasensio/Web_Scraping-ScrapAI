@@ -1,6 +1,7 @@
 import streamlit as st
 import subprocess
 import json
+import os
 
 def run_scraping(category, min_price, max_price, min_discount, max_discount):
     command = ['python', 'Ignaciogpasensio/Web_Scraping-ScrapAI/scrap.py', '--category', category]
