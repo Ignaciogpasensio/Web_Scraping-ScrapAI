@@ -1,9 +1,9 @@
-# scrap.py
+# En scrap.py
 import json
+import os
 
 def scrape_data(category):
-    # Aquí iría tu lógica de scraping
-    # En este ejemplo, solo creamos un diccionario de ejemplo
+    # Aquí va la lógica para obtener 'data'
     data = {
         'category': category,
         'items': [
@@ -12,12 +12,19 @@ def scrape_data(category):
             {'name': 'Item 3', 'price': '$39.99'}
         ]
     }
-    
+
+    # Obtener el directorio actual
+    current_directory = os.getcwd()
+
     # Guardar los datos en un archivo JSON
-    with open('find.json', 'w') as f:
+    file_path = os.path.join(current_directory, 'find.json')
+    with open(file_path, 'w') as f:
         json.dump(data, f)
+
+    return file_path  # Devolver el path del archivo creado
 
 if __name__ == '__main__':
     import sys
     category = sys.argv[1]  # Obtener la categoría del argumento de línea de comandos
-    scrape_data(category)
+    created_file_path = scrape_data(category)
+    print(f"Archivo 'find.json' creado en: {created_file_path}")
