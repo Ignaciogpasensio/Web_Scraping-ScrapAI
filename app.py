@@ -1,13 +1,10 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-import json
-import argparse
 import re
 
 base_url = 'https://es.scalperscompany.com'
 
-# Function to extract product data from the product URL
 def extract_product_data(product_url):
     data_dict = {}
     response = requests.get(product_url)
@@ -66,38 +63,9 @@ def extract_product_data(product_url):
 
     return data_dict
 
-# Function to extract product data from the script tag
-def extract_product_data_two(product, meta_data):
-    data_dict_two = {}
-
-    product_id = product.get('id')
-    product_id = str(product_id)
-    data_dict_two["product_id"] = product_id
-
-    variants = product.get('variants', [])
-
-    data_dict_two['cloth_type'] = product.get('type', 'No type')
-
-    sizes = set()
-    for variant in variants:
-        size = variant.get('public_title')
-        if size:
-            sizes.add(size.split('/')[1].strip())
-    data_dict_two['sizes'] = list(sizes)
-
-    colors = set()
-    for variant in variants:
-        color = variant.get('public_title')
-        if color:
-            colors.add(color.split('/')[0].strip())
-    data_dict_two['colors'] = list(colors)
-
-    return data_dict_two
-
-# Function to scrape products from the category URL
-def scrape_products(skirts_url):
+def scrape_products(category_url):
     products_data = []
-    response = requests.get(skirts_url)
+    response = requests.get(category_url)
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -113,135 +81,80 @@ def scrape_products(skirts_url):
 
     return products_data
 
-# Function to scrape products using meta data
-def scrape_products_two(skirts_url):
-    products_data_two = []
-    response = requests.get(skirts_url)
-
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        script_tag = soup.find('script', string=lambda text: text and 'var meta = ' in text)
-        if script_tag:
-            json_data = re.search(r'var meta = ({.*});', script_tag.string)
-            if json_data:
-                meta_data = json.loads(json_data.group(1))
-                products = meta_data.get('products', [])
-                for product in products:
-                    try:
-                        product_data_two = extract_product_data_two(product, meta_data)
-                        products_data_two.append(product_data_two)
-                    except Exception as e:
-                        continue
-
-    return products_data_two
-
-# Mapping dictionary for subcategory display names
-subcategory_names = {
-    'vestidos_monos': 'Vestidos & Monos',
-    'faldas': 'Faldas',
-    'camisas': 'Camisas',
-    'camisetas': 'Camisetas',
-    'tops': 'Tops',
-    'sudaderas': 'Sudaderas',
-    'brazers_chalecos': 'Brazers & Chalecos',
-    'pantalones': 'Pantalones',
-    'jeans': 'Jeans',
-    'bermudas_shorts': 'Bermudas & Shorts',
-    'chaquetas_trench': 'Chaquetas & Trenchs',
-    'jerseis_cardigan': 'Jerséis y Cárdigans',
-    'punto': 'Punto',
-    'total_look': 'Total Look',
-    'pijamas': 'Pijamas',
-    'bikinis_bañadores': 'Bikinis & Bañadores',
-    'athleisure': 'Athleisure',
-    'sneakers': 'Sneakers',
-    'sandalias': 'Sandalias',
-    'zapatos_tacon': 'Zapatos de Tacón',
-    'alpargatas_chanclas': 'Alpargatas & Chanclas',
-    'zapatos_planos': 'Zapatos Planos',
-    'bolsos_piel': 'Bolsos de Piel',
-    'bolso_nylon': 'Bolsos de Nylon',
-    'bandoleras': 'Bandoleras',
-    'capazos': 'Capazos',
-    'bolsos_rafia': 'Bolsos de Rafia',
-    'bolsos_mini': 'Bolsos Mini',
-    'bolsos_hombro': 'Bolsos de Hombro',
-    'neceseres': 'Neceseres',
-    'fundas_estuches': 'Fundas & Estuches',
-    'toallas': 'Toallas',
-    'gorras_sombreros': 'Gorras y Sombreros',
-    'carteras': 'Carteras',
-    'calcetines': 'Calcetines',
-    'cinturones': 'Cinturones',
-    'bisuteria': 'Bisutería',
-    'llaveros': 'Llaveros',
-    'gafas': 'Gafas',
-    'accesorios_movil': 'Accesorios para Móvil',
-    'fragancias': 'Fragancias'
-}
-
-# Streamlit app
 def main():
-    categories = {
-        'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
-        'Calzado': ['sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas', 'zapatos_planos'],
-        'Bolsos': ['bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos', 'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches'],
-        'Complementos': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
+    st.title("Scalpers Product Scraper")
+
+    category_options = [
+        'vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas',
+        'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench',
+        'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores',
+        'athleisure', 'sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas',
+        'zapatos_planos', 'bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos',
+        'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches',
+        'toallas', 'gorras_sombreros', 'carteras', 'joyas', 'bufandas_fulares',
+        'cinturones', 'gafas', 'perfumeria', 'libros', 'novedades', 'outlet'
+    ]
+
+    selected_category = st.selectbox("Select a product category", category_options)
+
+    category_map = {
+        'vestidos_monos': '/collections/mujer-nueva-coleccion-ropa-vestidos-y-monos-2086',
+        'faldas': '/collections/mujer-nueva-coleccion-ropa-faldas-2060',
+        'camisas': '/collections/mujer-nueva-coleccion-ropa-camisas-y-blusas-2048',
+        'camisetas': '/collections/mujer-nueva-coleccion-ropa-camisetas-y-tops-2054',
+        'tops': '/collections/mujer-nueva-coleccion-ropa-tops-2135',
+        'sudaderas': '/collections/mujer-nueva-coleccion-ropa-sudaderas-2082',
+        'brazers_chalecos': '/collections/mujer-nueva-coleccion-ropa-americanas-2038',
+        'pantalones': '/collections/mujer-nueva-coleccion-ropa-pantalones-2072',
+        'jeans': '/collections/mujer-nueva-coleccion-ropa-pantalones-vaqueros-2078',
+        'bermudas_shorts': '/collections/mujer-nueva-coleccion-ropa-bermudas-shorts-2047',
+        'chaquetas_trench': '/collections/mujer-nueva-coleccion-ropa-abrigos-y-chaquetas-2034',
+        'jerseis_cardigan': '/collections/mujer-nueva-coleccion-ropa-jerseis-y-cardigans-2067',
+        'punto': '/collections/mujer-nueva-coleccion-ropa-punto-2141',
+        'total_look': '/collections/mujer-total-look-2120',
+        'pijamas': '/collections/mujer-nueva-coleccion-ropa-pijamas-2081',
+        'bikinis_bañadores': '/collections/mujer-nueva-coleccion-ropa-banadores-y-bikinis-2042',
+        'athleisure': '/collections/mujer-adrenaline-ropa-deportiva-2098',
+        'sneakers': '/collections/mujer-nueva-coleccion-calzado-sneakers-2029',
+        'sandalias': '/collections/mujer-nueva-coleccion-calzado-sandalias-2028',
+        'zapatos_tacon': '/collections/mujer-nueva-coleccion-calzado-zapatos-tacon-2031',
+        'alpargatas_chanclas': '/collections/mujer-nueva-coleccion-calzado-alpargatas-2032',
+        'zapatos_planos': '/collections/mujer-nueva-coleccion-calzado-zapatos-planos-2030',
+        'bolsos_piel': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-piel-2012',
+        'bolso_nylon': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-nylon-2124',
+        'bandoleras': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-bandoleras-2006',
+        'capazos': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-capazo-2008',
+        'bolsos_rafia': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-rafia-2131',
+        'bolsos_mini': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-mini-2125',
+        'bolsos_hombro': '/collections/mujer-nueva-coleccion-bolsos-hombro',
+        'neceseres': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-neceser-2011',
+        'fundas_estuches': '/collections/mujer-nueva-coleccion-fundas',
+        'toallas': '/collections/mujer-nueva-coleccion-accesorios-toallas-2606',
+        'gorras_sombreros': '/collections/mujer-nueva-coleccion-accesorios-gorros-y-guantes-2018',
+        'carteras': '/collections/mujer-nueva-coleccion-accesorios-carteras-2017',
+        'joyas': '/collections/mujer-nueva-coleccion-accesorios-bisuteria-y-joyeria-2014',
+        'bufandas_fulares': '/collections/mujer-nueva-coleccion-accesorios-bufandas-y-fulares-2016',
+        'cinturones': '/collections/mujer-nueva-coleccion-accesorios-cinturones-2013',
+        'gafas': '/collections/mujer-nueva-coleccion-accesorios-gafas-de-sol-2015',
+        'perfumeria': '/collections/mujer-nueva-coleccion-perfumeria-2069',
+        'libros': '/collections/mujer-nueva-coleccion-libros-2595',
+        'novedades': '/collections/novedades-mujer-100001',
+        'outlet': '/collections/mujer-liquidacion-2134'
     }
 
-    st.title('Scraping de productos de Scalpers')
-    category = st.sidebar.selectbox('Seleccione la categoría', list(categories.keys()))
+    category_url = base_url + category_map[selected_category]
+    products_data = scrape_products(category_url)
 
-    subcategory_key = st.sidebar.selectbox('Seleccione la subcategoría', categories[category])
+    for product in products_data:
+        st.markdown(f"## {product['product_name']}")
+        st.image(product['product_image_url'], caption=product['product_name'], use_column_width=True)
+        st.write(f"**Brand:** {product['product_brand']}")
+        st.write(f"**Current Price:** €{product['product_price_after']}")
+        st.write(f"**Previous Price:** €{product['product_price_before']}")
+        st.write(f"**Discount:** {product['product_discount']}%")
+        st.write(f"**Product Page URL:** [{product['product_page_url']}]({product['product_page_url']})")
+        st.write("---")
 
-    skirts_url = f'https://es.scalperscompany.com/collections/{subcategory_key}'
-    st.write(f'URL de la categoría seleccionada: {skirts_url}')
-
-    min_price = st.sidebar.number_input('Precio mínimo', value=0)
-    max_price = st.sidebar.number_input('Precio máximo', value=9999)
-    min_discount = st.sidebar.number_input('Descuento mínimo', value=0)
-    max_discount = st.sidebar.number_input('Descuento máximo', value=100)
-
-    internal_data = {}
-
-    if st.sidebar.button('Ejecutar scraping'):
-        products_data = scrape_products(skirts_url)
-        products_data_two = scrape_products_two(skirts_url)
-
-        for product in products_data:
-            product_id = product.get('product_id')
-            internal_data[product_id] = {
-                'product_name': product.get('product_name', ''),
-                'product_price_after': product.get('product_price_after', 0),
-                'product_price_before': product.get('product_price_before', 0),
-                'product_discount': product.get('product_discount', 0),
-                'product_brand': product.get('product_brand', ''),
-                'product_page_url': product.get('product_page_url', ''),
-                'product_image_url': product.get('product_image_url', '')
-            }
-
-        for product in products_data_two:
-            product_id = product.get('product_id')
-            if product_id in internal_data:
-                internal_data[product_id]['sizes'] = product.get('sizes', [])
-                internal_data[product_id]['colors'] = product.get('colors', [])
-
-        st.success('Scraping completado!')
-
-    if st.sidebar.checkbox('Ver productos'):
-        st.write(f'Datos cargados correctamente de la subcategoría {subcategory_names.get(subcategory_key, subcategory_key)}:')
-        for product_id, product_data in internal_data.items():
-            st.write(f'ID: {product_id}')
-            st.write(f'Nombre: {product_data.get("product_name")}')
-            st.write(f'Precio (Después): {product_data.get("product_price_after")}')
-            st.write(f'Precio (Antes): {product_data.get("product_price_before")}')
-            st.write(f'Descuento: {product_data.get("product_discount")}%')
-            st.write(f'Marca: {product_data.get("product_brand")}')
-            st.write(f'URL: {product_data.get("product_page_url")}')
-            st.write(f'Imagen: {product_data.get("product_image_url")}')
-            st.write(f'Tallas: {", ".join(product_data.get("sizes", []))}')
-            st.write(f'Colores: {", ".join(product_data.get("colors", []))}')
-            st.write('---')
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
+
