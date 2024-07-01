@@ -1,85 +1,34 @@
 import streamlit as st
-import requests
-from bs4 import BeautifulSoup
-import re
+import subprocess
+import json
 
-base_url = 'https://es.scalperscompany.com'
+# Function to run scrap.py with arguments
+def run_scraping(category, min_price, max_price, min_discount, max_discount):
+    command = ['python', 'scrap.py', '--category', category]
 
-def extract_product_data(product_url):
-    data_dict = {}
-    response = requests.get(product_url)
+    if min_price is not None:
+        command.extend(['--min_price', str(min_price)])
+    if max_price is not None:
+        command.extend(['--max_price', str(max_price)])
+    if min_discount is not None:
+        command.extend(['--min_discount', str(min_discount)])
+    if max_discount is not None:
+        command.extend(['--max_discount', str(max_discount)])
 
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        script_tag = soup.find('script', id='viewed_product')
+    subprocess.run(command)
 
-        if script_tag:
-            script_content = script_tag.string
-
-            name_match = re.search(r'Name:\s*"([^"]+)"', script_content)
-            price_match = re.search(r'Price:\s*"([^"]+)"', script_content)
-            compare_at_price_match = re.search(r'CompareAtPrice:\s*"([^"]+)"', script_content)
-            product_id_match = re.search(r'ProductID:\s*(\d+),', script_content)
-            brand_match = re.search(r'Brand:\s*"([^"]+)"', script_content)
-            url_match = re.search(r'    URL:\s*"([^"]+)"', script_content)
-            image_match = re.search(r'ImageURL:\s*"([^"]+)"', script_content)
-
-            if name_match:
-                product_name = name_match.group(1)
-                data_dict['product_name'] = product_name
-
-            if product_id_match:
-                product_id = product_id_match.group(1)
-                data_dict['product_id'] = product_id
-
-            if price_match:
-                price = price_match.group(1)
-                price = float(price.replace("€", "").replace(",", "."))
-                data_dict['product_price_after'] = price
-
-            if compare_at_price_match:
-                compare_at_price = compare_at_price_match.group(1)
-                compare_at_price = float(compare_at_price.replace("€", "").replace(",", "."))
-                data_dict['product_price_before'] = compare_at_price
-
-                discount = compare_at_price - price
-                discount_percentage = (discount / compare_at_price) * 100
-                discount_percentage = int(round(discount_percentage))
-                data_dict['product_discount'] = discount_percentage
-
-            if brand_match:
-                product_brand = brand_match.group(1)
-                data_dict['product_brand'] = product_brand
-
-            if url_match:
-                product_page_url = url_match.group(1)
-                data_dict['product_page_url'] = product_page_url
-            else:
-                data_dict['product_page_url'] = "URL not found"
-
-            if image_match:
-                product_image_url = image_match.group(1)
-                data_dict['product_image_url'] = product_image_url
-
-    return data_dict
-
-def scrape_products(category_url):
-    products_data = []
-    response = requests.get(category_url)
-
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        products = soup.select('a[href*="/products/"]')
-        for product in products:
-            try:
-                product_url = base_url + product['href']
-                product_data = extract_product_data(product_url)
-                if product_data:
-                    products_data.append(product_data)
-            except Exception as e:
-                continue
-
-    return products_data
+# Function to load and format JSON data
+def load_data(category):
+    filename = f'search.json'
+    with open(filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    # Iterate through products and format sizes and colors
+    for product in data:
+        product['sizes'] = '/'.join(product['sizes'])
+        product['colors'] = '/'.join(product['colors'])
+    
+    return data
 
 # Mapping dictionary for subcategory display names
 subcategory_names = {
@@ -126,6 +75,7 @@ subcategory_names = {
     'fragancias': 'Fragancias'
 }
 
+# Streamlit app
 def main():
     categories = {
         'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
@@ -263,47 +213,53 @@ def main():
     st.markdown('<p class="title">ScrapAI</p>', unsafe_allow_html=True)
 
     if st.sidebar.button('SCRAPE'):
-        with st.spinner('Buscando ofertas...'):
-            category_url = base_url + categories[main_category][subcategory]
-            products_data = scrape_products(category_url)
+        with st.spinner('Bichendo ofertas...'):
+            run_scraping(subcategory, min_price, max_price, min_discount, max_discount)
 
     # Display scraped product data
     if st.sidebar.checkbox('Mostrar productos'):
         st.subheader(f'{subcategory_names[subcategory]}')
+        data = load_data(subcategory)
 
         # Create columns for product display
         cols = st.columns(3)
-        for index, product in enumerate(products_data):
+        for index, product in enumerate(data):
             discount_text = f"-{product['product_discount']}%"
             image_url = product['product_image_url']
             product_page_url = product['product_page_url']
             product_name = product['product_name']
             product_brand = product['product_brand']
+            cloth_type = product['cloth_type']
             product_price_before = product['product_price_before']
             product_price_after = product['product_price_after']
             product_id = product['product_id']
+            sizes = product['sizes']
+            colors = product['colors']
 
             # Filter products based on price and discount range
             if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
-                cols[index % 3].markdown(f"""
-                    <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="product-container">
-                            <div class="tooltip">
-                                <img src="{image_url}" alt="{product_name}"/>
-                                <span class="discount-text">
-                                    {discount_text}
-                                </span>
-                                <span class="tooltiptext">
-                                    <strong>{product_name}</strong><br>
-                                    <s>{product_price_before}€</s><br>
-                                    <strong>{product_price_after}€</strong><br>
-                                    <div class="smaller-text">Brand: {product_brand}<br>
-                                    ID: {product_id}</div>
-                                </span>
-                            </div>
+               cols[index % 3].markdown(f"""
+                <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="product-container">
+                        <div class="tooltip">
+                            <img src="{image_url}" alt="{product_name}"/>
+                            <span class="discount-text">
+                                {discount_text}
+                            </span>
+                            <span class="tooltiptext">
+                                <strong>{product_name}</strong><br>
+                                <s>{product_price_before}€</s><br>
+                                <strong>{product_price_after}€</strong><br>
+                                <div class="smaller-text">Brand: {product_brand}<br>
+                                Sizes: {sizes}<br>
+                                Colors: {colors}<br>
+                                ID: {product_id}</div>
+                            </span>
                         </div>
-                    </a>
-                    """, unsafe_allow_html=True)
+                    </div>
+                </a>
+                """, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
+
