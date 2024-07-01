@@ -217,7 +217,7 @@ def main(args):
         # Filter out products without 'colors'
         filtered_products_data = [product for product in products_data if 'colors' in product]
 
-        output_file = 'Ignaciogpasensio/Web_Scraping-ScrapAI/search.json'
+        output_file = 'search.json'
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(filtered_products_data, f, ensure_ascii=False, indent=2)
 
