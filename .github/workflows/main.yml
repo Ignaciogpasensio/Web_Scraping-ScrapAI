@@ -1,31 +1,33 @@
-name: Python Application
+name: Python Scripts Execution
 
 on:
   push:
     branches:
-      - main  # Cambia 'main' por la rama en la que quieres que se ejecute el flujo de trabajo
+      - main  # Cambia 'main' por la rama en la que quieres que se ejecute tu acción
+  pull_request:
+    branches:
+      - main  # Cambia 'main' por la rama en la que quieres que se ejecute tu acción
 
 jobs:
-  build:
+  run_scripts:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Setup Python
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.x  # Asegúrate de especificar la misma versión que usas localmente
+        python-version: '3.x'  # Especifica la versión de Python que necesitas
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip list  # Verifica los paquetes instalados
+        pip install -r requirements.txt  # Asegúrate de que 'requirements.txt' esté en tu repositorio
 
-    - name: Print Python version
-      run: python --version
+    - name: Execute scrape.py
+      run: python scrape.py  # Ejecuta scrape.py
 
-    - name: Run script
-      run: python scrap.py --category vestidos_monos --min_price 0 --max_price 100 --min_discount 10 --max_discount 50
+    - name: Execute app.py
+      run: python app.py  # Ejecuta app.py
