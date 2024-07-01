@@ -1,33 +1,47 @@
-name: Python Scripts Execution
+name: Streamlit App Deployment
 
 on:
   push:
     branches:
-      - main  # Cambia 'main' por la rama en la que quieres que se ejecute tu acción
-  pull_request:
-    branches:
-      - main  # Cambia 'main' por la rama en la que quieres que se ejecute tu acción
+      - main  # Ejecutar cuando se realice un push en la rama principal
 
 jobs:
-  run_scripts:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2  # Acción para clonar el repositorio
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'  # Especifica la versión de Python que necesitas
+        python-version: '3.x'  # Especifica la versión de Python que estás utilizando
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Asegúrate de que 'requirements.txt' esté en tu repositorio
+        pip install streamlit
+        pip install -r requirements.txt  # Si tienes otros requisitos en un archivo requirements.txt
 
-    - name: Execute scrape.py
-      run: python scrap.py  # Ejecuta scrape.py
+    - name: Run Streamlit app
+      run: streamlit run app.py &  # Ejecuta la aplicación Streamlit en segundo plano
+      background: true
 
-    - name: Execute app.py
-      run: python app.py  # Ejecuta app.py
+    - name: Wait for Streamlit to start
+      run: sleep 20  # Espera unos segundos para que Streamlit inicie correctamente
+
+    - name: Run scraping script
+      run: |
+        python scrap.py --category $CATEGORY --min_price $MIN_PRICE --max_price $MAX_PRICE --min_discount $MIN_DISCOUNT --max_discount $MAX_DISCOUNT
+      env:
+        CATEGORY: ${{ secrets.CATEGORY }}  # Categoría seleccionada por el usuario
+        MIN_PRICE: ${{ secrets.MIN_PRICE }}  # Precio mínimo seleccionado por el usuario
+        MAX_PRICE: ${{ secrets.MAX_PRICE }}  # Precio máximo seleccionado por el usuario
+        MIN_DISCOUNT: ${{ secrets.MIN_DISCOUNT }}  # Descuento mínimo seleccionado por el usuario
+        MAX_DISCOUNT: ${{ secrets.MAX_DISCOUNT }}  # Descuento máximo seleccionado por el usuario
+
+    - name: Shutdown Streamlit app
+      run: |
+        kill $(ps aux | grep 'streamlit' | awk '{print $2}')  # Detiene la aplicación Streamlit
+
