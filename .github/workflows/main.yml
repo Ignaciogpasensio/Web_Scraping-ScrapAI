@@ -28,4 +28,4 @@ jobs:
       run: python --version
 
     - name: Run script
-      run: python scrap.py
+      run: python scrap.py --category vestidos_monos --min_price 0 --max_price 100 --min_discount 10 --max_discount 50
