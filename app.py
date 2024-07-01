@@ -2,10 +2,8 @@ import streamlit as st
 import subprocess
 import json
 
-# Function to run scrap.py with arguments
 def run_scraping(category, min_price, max_price, min_discount, max_discount):
     command = ['python', 'scrap.py', '--category', category]
-
     if min_price is not None:
         command.extend(['--min_price', str(min_price)])
     if max_price is not None:
@@ -14,23 +12,27 @@ def run_scraping(category, min_price, max_price, min_discount, max_discount):
         command.extend(['--min_discount', str(min_discount)])
     if max_discount is not None:
         command.extend(['--max_discount', str(max_discount)])
-
     subprocess.run(command)
 
-# Function to load and format JSON data
 def load_data(category):
-    filename = f'search.json'
-    with open(filename, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    # Iterate through products and format sizes and colors
+    filename = 'search.json'
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        st.error(f'Error: File "{filename}" not found.')
+        return []
+    except Exception as e:
+        st.error(f'Error loading data: {e}')
+        return []
+    if not isinstance(data, list) or not all(isinstance(item, dict) for item in data):
+        st.error(f'Error: Invalid format in file "{filename}". Expected a list of dictionaries.')
+        return []
     for product in data:
-        product['sizes'] = '/'.join(product['sizes'])
-        product['colors'] = '/'.join(product['colors'])
-    
+        product['sizes'] = '/'.join(product.get('sizes', []))
+        product['colors'] = '/'.join(product.get('colors', []))
     return data
 
-# Mapping dictionary for subcategory display names
 subcategory_names = {
     'vestidos_monos': 'Vestidos & Monos',
     'faldas': 'Faldas',
@@ -75,7 +77,6 @@ subcategory_names = {
     'fragancias': 'Fragancias'
 }
 
-# Streamlit app
 def main():
     categories = {
         'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
@@ -83,7 +84,6 @@ def main():
         'Bolsos': ['bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos', 'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches'],
         'Accesorios': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
     }
-
     st.markdown("""
     <style>
     .sidebar .sidebar-content {
@@ -92,7 +92,6 @@ def main():
         padding: 20px; /* Adds padding inside the sidebar */
         border-right: 2px solid #ccc; /* Adds a border on the right side of the sidebar */
     }
-
     .sidebar select {
         background-color: white !important;
         color: black !important;
@@ -103,7 +102,6 @@ def main():
         width: 100%; /* Optional: Adjust width to fit your layout */
         box-shadow: none !important; /* Optional: Remove box shadow */
     }
-
     .sidebar .stButton {
         background-color: #007bff !important;
         color: white !important;
@@ -112,7 +110,6 @@ def main():
         padding: 10px 20px;
         font-weight: bold;
     }
-
     .sidebar .stButton:hover {
         background-color: #0056b3 !important;
         border-color: #0056b3 !important;
@@ -186,7 +183,6 @@ def main():
     </style>
     """, unsafe_allow_html=True)
 
-    # JavaScript to adjust tooltip position dynamically
     st.markdown(
         """
         <script>
@@ -207,35 +203,21 @@ def main():
         unsafe_allow_html=True
     )
 
-    # Sidebar - Main Category selection
     main_category = st.sidebar.selectbox('Selecciona la Categoría', list(categories.keys()))
-
-    # Sidebar - Subcategory selection based on main category
     subcategory = st.sidebar.selectbox(f'¿Qué gama de {main_category} desea?', categories[main_category])
-
-    # Price range slider
     price_range = st.sidebar.slider('Seleccione el rango de precios que está dispuesto a pagar', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
     min_price = price_range[0]
     max_price = price_range[1]
-
-    # Discount range slider
     discount_range = st.sidebar.slider('Seleccione el rango de descuento que le interesa', min_value=0, max_value=100, value=(0, 100), step=1)
     min_discount = discount_range[0]
     max_discount = discount_range[1]
-
-    # Custom title with font style and center alignment
     st.markdown('<p class="title">ScrapAI</p>', unsafe_allow_html=True)
-
     if st.sidebar.button('SCRAPE'):
         with st.spinner('Bichendo ofertas...'):
             run_scraping(subcategory, min_price, max_price, min_discount, max_discount)
-
-    # Display scraped product data
     if st.sidebar.checkbox('Mostrar productos'):
         st.subheader(f'{subcategory_names[subcategory]}')
         data = load_data(subcategory)
-
-        # Create columns for product display
         cols = st.columns(3)
         for index, product in enumerate(data):
             discount_text = f"-{product['product_discount']}%"
@@ -249,8 +231,6 @@ def main():
             product_id = product['product_id']
             sizes = product['sizes']
             colors = product['colors']
-
-            # Filter products based on price and discount range
             if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
                cols[index % 3].markdown(f"""
                 <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
