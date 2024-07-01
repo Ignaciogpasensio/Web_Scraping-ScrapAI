@@ -1,7 +1,7 @@
-# En app.py
 import streamlit as st
 import subprocess
 import json
+import os
 
 # Título y selección de categoría
 st.title('Aplicación de Selección de Categoría')
@@ -28,4 +28,6 @@ if st.button('Find'):
     except FileNotFoundError:
         st.write(f"No se encontró el archivo 'find.json' en {file_path}")
 
-    # Aquí puedes continuar con otras acciones si lo deseas
+    # Mostrar ruta del repositorio de GitHub
+    repo_path = os.getenv('GITHUB_WORKSPACE', default='/Ignaciogpasensio/Web_Scraping-ScrapAI/')
+    st.write(f"Ruta del repositorio en GitHub: {repo_path}")
