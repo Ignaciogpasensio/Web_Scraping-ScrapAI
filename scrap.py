@@ -3,8 +3,10 @@ from bs4 import BeautifulSoup
 import json
 import argparse
 import re
+import os
 
 base_url = 'https://es.scalperscompany.com'
+repo_path = 'Ignaciogpasensio/Web_Scraping-ScrapAI'
 
 def extract_product_data(product_url):
     data_dict = {}
@@ -183,10 +185,18 @@ def main(args):
                         filtered_products_data.append(product)
             products_data = filtered_products_data
         filtered_products_data = [product for product in products_data if 'colors' in product]
+
         output_file = 'search.json'
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(filtered_products_data, f, ensure_ascii=False, indent=2)
         print(f'Successfully scraped {len(filtered_products_data)} products from category "{args.category}" in the price range {min_price}€ - {max_price}€ and discount range {min_discount}% - {max_discount}%. Data saved to {output_file}')
+        try:
+            os.chdir('Ignaciogpasensio/Web_Scraping-ScrapAI')  # Change directory to your repository
+            subprocess.run(['git', 'pull'])  # Pull latest changes (if any)
+            subprocess.run(['git', 'add', 'search.json'])
+            subprocess.run(['git', 'commit', '-m', 'Update search.json'])
+            subprocess.run(['git', 'push'])
+            print("Successfully pushed changes to GitHub.")
     else:
         print(f'Invalid category "{args.category}". Please choose one of: faldas, vestidos_monos, sneakers, bolsos, toallas.')
 
