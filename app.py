@@ -15,7 +15,7 @@ def run_scraping(category, min_price, max_price, min_discount, max_discount):
     subprocess.run(command)
 
 def load_data(category):
-    filename = 'search.json'
+    filename = 'Web_Scraping-ScrapAI/search.json'
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.load(f)
