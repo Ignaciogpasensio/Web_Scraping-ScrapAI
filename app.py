@@ -17,7 +17,7 @@ if st.button('Find'):
     file_path = result.stdout.strip()  # Obtener el path del archivo creado
     
     # Mostrar el path en Streamlit
-    st.write(f"Archivo 'find.json' se ha creado en: {file_path}")
+    st.write(f"Intentando leer 'find.json' desde: {file_path}")
     
     # Mostrar contenido de find.json si existe
     try:
@@ -27,7 +27,3 @@ if st.button('Find'):
             st.write(data)
     except FileNotFoundError:
         st.write(f"No se encontró el archivo 'find.json' en {file_path}")
-
-    # Mostrar ruta del repositorio de GitHub
-    repo_path = os.getenv('GITHUB_WORKSPACE', default='/Ignaciogpasensio/Web_Scraping-ScrapAI/')
-    st.write(f"Ruta del repositorio en GitHub: {repo_path}")
