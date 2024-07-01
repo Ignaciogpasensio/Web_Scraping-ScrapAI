@@ -24,8 +24,8 @@ jobs:
         pip install streamlit
         pip install -r requirements.txt  # Si tienes otros requisitos en un archivo requirements.txt
 
-    - name: Run Streamlit app
-      run: streamlit run app.py &  # Ejecuta la aplicación Streamlit en segundo plano
+    - name: Start Streamlit app
+      run: nohup streamlit run app.py &  # Ejecuta la aplicación Streamlit en segundo plano
       background: true
 
     - name: Wait for Streamlit to start
@@ -44,4 +44,5 @@ jobs:
     - name: Shutdown Streamlit app
       run: |
         kill $(ps aux | grep 'streamlit' | awk '{print $2}')  # Detiene la aplicación Streamlit
+
 
