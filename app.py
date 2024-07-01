@@ -3,7 +3,7 @@ import subprocess
 import json
 
 def run_scraping(category, min_price, max_price, min_discount, max_discount):
-    command = ['python', 'Web_Scraping-ScrapAI/scrap.py', '--category', category]
+    command = ['python', 'Ignaciogpasensio/Web_Scraping-ScrapAI/scrap.py', '--category', category]
     if min_price is not None:
         command.extend(['--min_price', str(min_price)])
     if max_price is not None:
@@ -15,7 +15,7 @@ def run_scraping(category, min_price, max_price, min_discount, max_discount):
     subprocess.run(command)
 
 def load_data(category):
-    filename = 'Web_Scraping-ScrapAI/search.json'
+    filename = 'Ignaciogpasensio/Web_Scraping-ScrapAI/search.json'
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.load(f)
