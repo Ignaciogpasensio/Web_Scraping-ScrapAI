@@ -3,7 +3,7 @@ import json
 import os
 
 def scrape_data(category):
-    # Aquí va la lógica para obtener 'data'
+    # Lógica para obtener 'data'
     data = {
         'category': category,
         'items': [
@@ -13,18 +13,18 @@ def scrape_data(category):
         ]
     }
 
-    # Obtener el directorio actual
-    current_directory = os.getcwd()
+    # Obtener el directorio actual donde se está ejecutando scrap.py
+    current_directory = os.path.dirname(os.path.abspath(__file__))
 
     # Guardar los datos en un archivo JSON
     file_path = os.path.join(current_directory, 'find.json')
     with open(file_path, 'w') as f:
         json.dump(data, f)
-    print(file_path)
+
     return file_path  # Devolver el path del archivo creado
 
 if __name__ == '__main__':
     import sys
     category = sys.argv[1]  # Obtener la categoría del argumento de línea de comandos
     created_file_path = scrape_data(category)
-    print(f"Archivo 'find.json' creado en: {created_file_path}")
+    print(created_file_path)  # Imprimir el path del archivo creado
