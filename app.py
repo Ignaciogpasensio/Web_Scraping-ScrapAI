@@ -8,7 +8,7 @@ def run_find_script(category):
     # Run the find.py script with the selected category
     result = subprocess.run(['python3', 'scrap.py', category], capture_output=True, text=True)
     if result.returncode != 0:
-        st.error("Error running find.py script")
+        st.error("Error running scrap.py script")
         st.stop()
 
 def display_results():
@@ -17,7 +17,7 @@ def display_results():
             data = json.load(f)
             st.write(data)
     except FileNotFoundError:
-        st.error("find.json not found. Please run the find.py script first.")
+        st.error("find.json not found. Please run the scrap.py script first.")
 
 # Streamlit app
 st.title('Scalpers Category Finder')
