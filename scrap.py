@@ -1,4 +1,4 @@
-# find.py
+# scrap.py
 
 import sys
 import requests
@@ -7,25 +7,29 @@ import json
 
 def get_category_count(category):
     url = 'https://es.scalperscompany.com'
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Check for HTTP errors
+    except requests.RequestException as e:
+        print(f"Error fetching the URL: {e}")
+        sys.exit(1)
+
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Find the quantity of the selected category in the website
-    # This part needs to be adjusted based on the actual HTML structure of the Scalpers website
-    # For demonstration, we will assume there are HTML elements with specific classes or IDs for jeans and shirts
-
+    # Example selectors, adjust these according to the actual website structure
     if category == 'jeans':
         elements = soup.find_all(class_='category-jeans')
     elif category == 'shirts':
         elements = soup.find_all(class_='category-shirts')
     else:
-        return 0
+        print(f"Invalid category: {category}")
+        sys.exit(1)
     
     return len(elements)
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python find.py <category>")
+        print("Usage: python scrap.py <category>")
         sys.exit(1)
     
     category = sys.argv[1]
