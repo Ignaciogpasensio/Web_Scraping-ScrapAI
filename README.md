@@ -2,7 +2,7 @@
 
 ## Overview
 
-ScrapAI is a Python application designed to scrape product data from the Scalpers website, focusing on various categories such as clothing, shoes, bags, accessories, and more. It utilizes web scraping techniques with BeautifulSoup and requests libraries to gather product information like name, price, discounts, sizes, and colors. The scraped data is then visualized using Streamlit for easy exploration and filtering.
+ScrapAI is a Python application designed to scrape product data from the Scalpers Company website, focusing on various categories such as clothing, shoes, bags, accessories, and more. It utilizes web scraping techniques with BeautifulSoup and requests libraries to gather product information like name, price, discounts, sizes, and colors. The scraped data is then visualized using Streamlit for easy exploration and filtering.
 
 ## Features
 
