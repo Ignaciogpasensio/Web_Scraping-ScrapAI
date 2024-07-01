@@ -6,7 +6,7 @@ import subprocess
 
 def run_find_script(category):
     # Run the find.py script with the selected category
-    result = subprocess.run(['python3', 'find.py', category], capture_output=True, text=True)
+    result = subprocess.run(['python3', 'scrap.py', category], capture_output=True, text=True)
     if result.returncode != 0:
         st.error("Error running find.py script")
         st.stop()
