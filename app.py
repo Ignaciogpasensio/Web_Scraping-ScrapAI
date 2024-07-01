@@ -126,7 +126,6 @@ subcategory_names = {
     'fragancias': 'Fragancias'
 }
 
-# Streamlit app
 def main():
     categories = {
         'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
@@ -265,7 +264,7 @@ def main():
 
     if st.sidebar.button('SCRAPE'):
         with st.spinner('Buscando ofertas...'):
-            category_url = base_url + category_map[subcategory]
+            category_url = base_url + categories[main_category][subcategory]
             products_data = scrape_products(category_url)
 
     # Display scraped product data
@@ -286,25 +285,25 @@ def main():
 
             # Filter products based on price and discount range
             if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
-               cols[index % 3].markdown(f"""
-                <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
-                    <div class="product-container">
-                        <div class="tooltip">
-                            <img src="{image_url}" alt="{product_name}"/>
-                            <span class="discount-text">
-                                {discount_text}
-                            </span>
-                            <span class="tooltiptext">
-                                <strong>{product_name}</strong><br>
-                                <s>{product_price_before}€</s><br>
-                                <strong>{product_price_after}€</strong><br>
-                                <div class="smaller-text">Brand: {product_brand}<br>
-                                ID: {product_id}</div>
-                            </span>
+                cols[index % 3].markdown(f"""
+                    <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="product-container">
+                            <div class="tooltip">
+                                <img src="{image_url}" alt="{product_name}"/>
+                                <span class="discount-text">
+                                    {discount_text}
+                                </span>
+                                <span class="tooltiptext">
+                                    <strong>{product_name}</strong><br>
+                                    <s>{product_price_before}€</s><br>
+                                    <strong>{product_price_after}€</strong><br>
+                                    <div class="smaller-text">Brand: {product_brand}<br>
+                                    ID: {product_id}</div>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                </a>
-                """, unsafe_allow_html=True)
+                    </a>
+                    """, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
