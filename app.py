@@ -7,8 +7,8 @@ if st.button('Guardar JSON'):
     # Datos de ejemplo
     data = {'nombre': 'Juan', 'edad': 30}
 
-    # Guardar el archivo JSON en el mismo directorio
-    file_path = './data.json'
+    # Guardar el archivo JSON en una ruta absoluta
+    file_path = '/ruta/al/repo/data.json'
     with open(file_path, 'w') as f:
         json.dump(data, f)
 
