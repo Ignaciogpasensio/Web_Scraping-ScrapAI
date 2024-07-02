@@ -229,7 +229,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Scrape product data from Scalpers website.')
     parser.add_argument('--category', choices=['vestidos_monos','faldas','camisas','camisetas','tops','sudaderas','brazers_chalecos','pantalones','jeans','bermudas_shorts',
                                                'chaquetas_trench','jerseis_cardigan','punto','total_look','pijamas','bikinis_bañadores','athleisure','sneakers',
-                                               'sandalias','zapatos_tacon','alpargatas_chanclas','zapatos_planos','bolsos_piel','bolso_nylon','bandoleras','capazos'
+                                               'sandalias','zapatos_tacon','alpargatas_chanclas','zapatos_planos','bolsos_piel','bolso_nylon','bandoleras','capazos',
                                                'bolsos_rafia','bolsos_mini','bolsos_hombro','neceseres','fundas_estuches','toallas','gorras_sombreros','carteras',
                                                'calcetines','cinturones','bisuteria','llaveros','gafas','accesorios_movil','fragancias'],
                         help='Category of products to scrape', required=True)
