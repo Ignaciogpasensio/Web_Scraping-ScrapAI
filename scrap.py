@@ -178,50 +178,23 @@ def main(args):
 
     if args.category in category_map:
         category_url = base_url + category_map[args.category]
+        products_data_dict = {}
         products_data = scrape_products(category_url)
         products_data_two = scrape_products_two(category_url)
-        products_data_dict = {product['product_id']: product for product in products_data}
-        
+
+        for product in products_data:
+            product_id = product['product_id']
+            products_data_dict[product_id] = product
+
         for product_two in products_data_two:
-            if 'colors' in product_two and 'sizes' in product_two:
-                product_id = product_two['product_id']
-                if product_id in products_data_dict:
-                    products_data_dict[product_id].update(product_two)
+            product_id = product_two['product_id']
+            if product_id in products_data_dict:
+                products_data_dict[product_id].update(product_two)
+            else:
+                products_data_dict[product_id] = product_two
 
-        # Filter by price range
-        min_price = args.min_price
-        max_price = args.max_price
+        print(f'Successfully scraped {len(products_data_dict)} products from category "{args.category}".')
 
-        if min_price is not None and max_price is not None:
-            filtered_products_data = []
-            for product in products_data_dict.values():
-                if 'product_price_after' in product:
-                    price_after = product['product_price_after']
-                    if min_price <= price_after <= max_price:
-                        filtered_products_data.append(product)
-            products_data = filtered_products_data
-
-        # Filter by discount range
-        min_discount = args.min_discount
-        max_discount = args.max_discount
-
-        if min_discount is not None and max_discount is not None:
-            filtered_products_data = []
-            for product in products_data:
-                if 'product_discount' in product:
-                    discount = product['product_discount']
-                    if min_discount <= discount <= max_discount:
-                        filtered_products_data.append(product)
-            products_data = filtered_products_data
-
-        # Filter out products without 'colors'
-        filtered_products_data = [product for product in products_data if 'colors' in product]
-
-        output_file = 'search.json'
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(filtered_products_data, f, ensure_ascii=False, indent=2)
-
-        print(f'Successfully scraped {len(filtered_products_data)} products from category "{args.category}" in the price range {min_price}€ - {max_price}€ and discount range {min_discount}% - {max_discount}%. Data saved to {output_file}')
     else:
         print(f'Invalid category "{args.category}". Please choose one of: faldas, vestidos_monos, sneakers, bolsos, toallas.')
 
