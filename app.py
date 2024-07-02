@@ -17,11 +17,12 @@ def run_scraping(category, min_price, max_price, min_discount, max_discount):
 
     subprocess.run(command)
 
-# Function to load and format JSON data
+# Function to load and format data from product_data_dict
 def load_data(category):
-    filename = f'search.json'
-    with open(filename, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    # Assuming product_data_dict is already available from scrap.py
+    from scrap import product_data_dict
+
+    data = list(product_data_dict.values())
     
     # Iterate through products and format sizes and colors
     for product in data:
