@@ -236,7 +236,7 @@ def main():
         data = load_data(subcategory)
 
         # Create columns for product display
-        cols = st.columns(3)
+        cols = st.columns(4)
         for index, product in enumerate(data):
             discount_text = f"-{product['product_discount']}%"
             image_url = product['product_image_url']
