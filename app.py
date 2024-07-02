@@ -252,7 +252,7 @@ def main():
 
             # Filter products based on price and discount range
             if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
-               cols[index % 3].markdown(f"""
+               cols[index % 4].markdown(f"""
                 <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
                     <div class="product-container">
                         <div class="tooltip">
