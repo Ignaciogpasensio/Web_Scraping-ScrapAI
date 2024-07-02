@@ -1,6 +1,7 @@
 import streamlit as st
 import subprocess
 import json
+from scrap import scrape_data
 
 # Function to run scrap.py with arguments
 def run_scraping(category, min_price, max_price, min_discount, max_discount):
