@@ -15,3 +15,5 @@ ScrapAI is a Python application designed to scrape product data from the Scalper
 
 * Python 3.6+
 * Libraries listed in requirements.txt
+
+![parte delantera](ScrapAI.png)
