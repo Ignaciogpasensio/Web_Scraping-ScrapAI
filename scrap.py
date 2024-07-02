@@ -3,9 +3,6 @@ from bs4 import BeautifulSoup
 import json
 import argparse
 import re
-
-base_url = 'https://es.scalperscompany.com'
-
 def extract_product_data(product_url):
     data_dict = {}
     response = requests.get(product_url)
@@ -82,7 +79,6 @@ def extract_product_data_two(product, meta_data):
             sizes.add(size.split('/')[1].strip())
     data_dict_two['sizes'] = list(sizes)
 
-
     colors = set()
     for variant in variants:
         color = variant.get('public_title')
@@ -91,10 +87,9 @@ def extract_product_data_two(product, meta_data):
     data_dict_two['colors'] = list(colors)
 
     return data_dict_two
-
-def scrape_products(skirts_url):
+def scrape_products(category_url):
     products_data = []
-    response = requests.get(skirts_url)
+    response = requests.get(category_url)
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -106,13 +101,14 @@ def scrape_products(skirts_url):
                 if product_data:
                     products_data.append(product_data)
             except Exception as e:
+                print(f'Error scraping product: {e}')
                 continue
 
     return products_data
 
-def scrape_products_two(skirts_url):
+def scrape_products_two(category_url):
     products_data_two = []
-    response = requests.get(skirts_url)
+    response = requests.get(category_url)
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -127,88 +123,93 @@ def scrape_products_two(skirts_url):
                         product_data_two = extract_product_data_two(product, meta_data)
                         products_data_two.append(product_data_two)
                     except Exception as e:
+                        print(f'Error extracting product data: {e}')
                         continue
 
     return products_data_two
+st.markdown("""
+<style>
+.sidebar .sidebar-content {
+    background-color: white !important;
+    color: black !important;
+    padding: 20px;
+    border-right: 2px solid #ccc;
+}
 
-def main(args):
-    category_map = {
-        'vestidos_monos': '/collections/mujer-nueva-coleccion-ropa-vestidos-y-monos-2086',
-        'faldas': '/collections/mujer-nueva-coleccion-ropa-faldas-2060',
-        'camisas': '/collections/mujer-nueva-coleccion-ropa-camisas-y-blusas-2048',
-        'camisetas': '/collections/mujer-nueva-coleccion-ropa-camisetas-y-tops-2054',
-        'tops': '/collections/mujer-nueva-coleccion-ropa-tops-2135',
-        'sudaderas': '/collections/mujer-nueva-coleccion-ropa-sudaderas-2082',
-        'brazers_chalecos': '/collections/mujer-nueva-coleccion-ropa-americanas-2038',
-        'pantalones': '/collections/mujer-nueva-coleccion-ropa-pantalones-2072',
-        'jeans': '/collections/mujer-nueva-coleccion-ropa-pantalones-vaqueros-2078',
-        'bermudas_shorts': '/collections/mujer-nueva-coleccion-ropa-bermudas-shorts-2047',
-        'chaquetas_trench': '/collections/mujer-nueva-coleccion-ropa-abrigos-y-chaquetas-2034',
-        'jerseis_cardigan': '/collections/mujer-nueva-coleccion-ropa-jerseis-y-cardigans-2067',
-        'punto': '/collections/mujer-nueva-coleccion-ropa-punto-2141',
-        'total_look': '/collections/mujer-total-look-2120',
-        'pijamas': '/collections/mujer-nueva-coleccion-ropa-pijamas-2081',
-        'bikinis_bañadores': '/collections/mujer-nueva-coleccion-ropa-banadores-y-bikinis-2042',
-        'athleisure': '/collections/mujer-adrenaline-ropa-deportiva-2098',
-        'sneakers': '/collections/mujer-nueva-coleccion-calzado-sneakers-2029',
-        'sandalias': '/collections/mujer-nueva-coleccion-calzado-sandalias-2028',
-        'zapatos_tacon': '/collections/mujer-nueva-coleccion-calzado-zapatos-tacon-2031',
-        'alpargatas_chanclas': '/collections/mujer-nueva-coleccion-calzado-alpargatas-2032',
-        'zapatos_planos': '/collections/mujer-nueva-coleccion-calzado-zapatos-planos-2030',
-        'bolsos_piel': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-piel-2012',
-        'bolso_nylon': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-nylon-2124',
-        'bandoleras': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-bandoleras-2006',
-        'capazos': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-capazo-2008',
-        'bolsos_rafia': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-rafia-2131',
-        'bolsos_mini': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-mini-2125',
-        'bolsos_hombro': '/collections/mujer-nueva-coleccion-bolsos-hombro',
-        'neceseres': '/collections/mujer-nueva-coleccion-accesorios-bolsos-y-marroquineria-neceser-2011',
-        'fundas_estuches': '/collections/mujer-nueva-coleccion-fundas',
-        'toallas': '/collections/mujer-nueva-coleccion-accesorios-toallas-2606',
-        'gorras_sombreros': '/collections/mujer-nueva-coleccion-accesorios-gorros-y-guantes-2018',
-        'carteras': '/collections/mujer-nueva-coleccion-accesorios-gorros-y-guantes-2018',
-        'calcetines': '/collections/mujer-nueva-coleccion-accesorios-calcetines-2014',
-        'cinturones': '/collections/mujer-nueva-coleccion-accesorios-cinturones-2015',
-        'bisuteria': '/collections/mujer-nueva-coleccion-accesorios-bisuteria-2005',
-        'llaveros': '/collections/mujer-nueva-coleccion-accesorios-llaveros-2628',
-        'gafas': '/collections/mujer-nueva-coleccion-accesorios-gafas-2017',
-        'accesorios_movil': '/collections/nueva-coleccion-accesorios-accesorios-movil-0007',
-        'fragancias': '/collections/mujer-nueva-coleccion-accesorios-fragancias-2016'
+.sidebar select {
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    box-shadow: none !important;
+}
+
+.sidebar .stButton {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+.sidebar .stButton:hover {
+    background-color: #0056b3 !important;
+    border-color: #0056b3 !important;
+}
+
+.title {
+    font-family: 'Arial', sans-serif;
+    font-size: 80px;
+    font-weight: bold;
+    color: #333333;
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+</style>
+""", unsafe_allow_html=True)
+def main():
+    categories = {
+        'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
+        'Calzado': ['sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas', 'zapatos_planos'],
+        'Bolsos': ['bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos', 'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches'],
+        'Accesorios': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
     }
 
-    if args.category in category_map:
-        category_url = base_url + category_map[args.category]
-        products_data_dict = {}
-        products_data = scrape_products(category_url)
-        products_data_two = scrape_products_two(category_url)
+    # Tu código existente para la barra lateral, controles y carga de datos
 
-        for product in products_data:
+    # Custom title with font style and center alignment
+    st.markdown('<p class="title">ScrapAI</p>', unsafe_allow_html=True)
+
+    if st.sidebar.button('SCRAPE'):
+        with st.spinner('Bichendo ofertas...'):
+            run_scraping(subcategory, min_price, max_price, min_discount, max_discount)
+
+    # Display scraped product data
+    if st.sidebar.checkbox('Mostrar productos'):
+        st.subheader(f'{subcategory_names[subcategory]}')
+        data = load_data(subcategory)
+
+        # Create columns for product display
+        cols = st.columns(5)
+        for index, product in enumerate(data):
+            discount_text = f"-{product['product_discount']}%"
+            image_url = product['product_image_url']
+            product_page_url = product['product_page_url']
+            product_name = product['product_name']
+            product_brand = product['product_brand']
+            cloth_type = product['cloth_type']
+            product_price_before = product['product_price_before']
+            product_price_after = product['product_price_after']
             product_id = product['product_id']
-            products_data_dict[product_id] = product
 
-        for product_two in products_data_two:
-            product_id = product_two['product_id']
-            if product_id in products_data_dict:
-                products_data_dict[product_id].update(product_two)
-            else:
-                products_data_dict[product_id] = product_two
+            cols[index % 5].image(image_url, caption=f"{discount_text} de {product_price_after} €.", use_column_width=True)
+            cols[index % 5].write(f"{product_name} {product_brand} de {product_price_before} €..")
 
-        print(f'Successfully scraped {len(products_data_dict)} products from category "{args.category}".')
+if __name__ == '__main__':
+    main()
 
-    else:
-        print(f'Invalid category "{args.category}". Please choose one of: faldas, vestidos_monos, sneakers, bolsos, toallas.')
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Scrape product data from Scalpers website.')
-    parser.add_argument('--category', choices=['vestidos_monos','faldas','camisas','camisetas','tops','sudaderas','brazers_chalecos','pantalones','jeans','bermudas_shorts',
-                                               'chaquetas_trench','jerseis_cardigan','punto','total_look','pijamas','bikinis_bañadores','athleisure','sneakers',
-                                               'sandalias','zapatos_tacon','alpargatas_chanclas','zapatos_planos','bolsos_piel','bolso_nylon','bandoleras','capazos',
-                                               'bolsos_rafia','bolsos_mini','bolsos_hombro','neceseres','fundas_estuches','toallas','gorras_sombreros','carteras',
-                                               'calcetines','cinturones','bisuteria','llaveros','gafas','accesorios_movil','fragancias'],
-                        help='Category of products to scrape', required=True)
-    parser.add_argument('--min_price', type=float, help='Minimum price filter')
-    parser.add_argument('--max_price', type=float, help='Maximum price filter')
-    parser.add_argument('--min_discount', type=int, help='Minimum discount filter')
-    parser.add_argument('--max_discount', type=int, help='Maximum discount filter')
-    args = parser.parse_args()
-    main(args)
