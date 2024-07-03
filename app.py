@@ -92,7 +92,6 @@ def main():
         padding: 20px; /* Adds padding inside the sidebar */
         border-right: 2px solid #ccc; /* Adds a border on the right side of the sidebar */
     }
-
     .sidebar select {
         background-color: white !important;
         color: black !important;
@@ -103,7 +102,6 @@ def main():
         width: 100%; /* Optional: Adjust width to fit your layout */
         box-shadow: none !important; /* Optional: Remove box shadow */
     }
-
     .sidebar .stButton {
         background-color: #007bff !important;
         color: white !important;
@@ -112,7 +110,6 @@ def main():
         padding: 10px 20px;
         font-weight: bold;
     }
-
     .sidebar .stButton:hover {
         background-color: #0056b3 !important;
         border-color: #0056b3 !important;
@@ -129,7 +126,7 @@ def main():
         font-family: 'Arial', sans-serif;
         font-size: 80px;
         font-weight: bold;
-        color: black;
+        color: white;
         text-align: center; /* Center align the title */
         margin-top: 0px;
         margin-bottom: 20px; /* Optional: Add some bottom margin */
