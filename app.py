@@ -126,7 +126,7 @@ def main():
         font-family: 'Arial', sans-serif;
         font-size: 80px;
         font-weight: bold;
-        color: white;
+        color: black;
         text-align: center; /* Center align the title */
         margin-top: 0px;
         margin-bottom: 20px; /* Optional: Add some bottom margin */
