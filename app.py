@@ -117,6 +117,14 @@ def main():
         background-color: #0056b3 !important;
         border-color: #0056b3 !important;
     }
+        .title-container {
+        background-image: url('https://i.pinimg.com/736x/c0/51/e0/c051e01026300529d49ce029aef829dc.jpg'); /* URL de tu imagen de fondo */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        text-align: center;
+        padding: 100px 0; /* Ajusta el espacio alrededor del título */
+    }
     .title {
         font-family: 'Arial', sans-serif;
         font-size: 80px;
