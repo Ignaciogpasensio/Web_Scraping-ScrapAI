@@ -115,7 +115,7 @@ def main():
         border-color: #0056b3 !important;
     }
     .title-container {
-        background-image: url('https://i.pinimg.com/736x/ba/4c/2d/ba4c2d54f4407810a2d31041f4126195.jpg'); /* URL de tu imagen de fondo */
+        background-image: url('https://i.pinimg.com/236x/33/2a/37/332a37c4adadddd23f110ae3421ba7e2.jpg'); /* URL de tu imagen de fondo */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
