@@ -241,7 +241,7 @@ def main():
         data = load_data(subcategory)
 
         # Crear columnas para mostrar productos
-        cols = st.columns(3)
+        cols = st.columns(6)
         for index, product in enumerate(data):
             discount_text = f"-{product['product_discount']}%"
             image_url = product['product_image_url']
@@ -257,7 +257,7 @@ def main():
 
             # Filtrar productos según el rango de precio y descuento
             if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
-                cols[index % 3].markdown(f"""
+                cols[index % 6].markdown(f"""
                 <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
                     <div class="product-container">
                         <div class="tooltip">
