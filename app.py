@@ -123,7 +123,7 @@ def main():
         padding: 100px 0; /* Ajusta el espacio alrededor del título */
     }
     .title {
-        font-family: 'Nicolas Cochin';
+        font-family: 'Bodoni';
         font-size: 80px;
         font-weight: bold;
         color: white;
@@ -211,6 +211,17 @@ def main():
         """,
         unsafe_allow_html=True
     )
+
+    page_bg_img = '''
+    <style>
+        body {
+        background-image: url("https://7700b77c.rocketcdn.me/wp-content/uploads/2020/12/©-Mark-Nouss-Louvre-featured-image-copy.jpg");
+        background-size: cover;
+        }
+    </style>
+    '''
+
+    st.markdown(page_bg_img, unsafe_allow_html=True)
 
     # Barra lateral - Selección de categoría principal
     main_category = st.sidebar.selectbox('Selecciona la Categoría', list(categories.keys()))
