@@ -123,7 +123,7 @@ def main():
         padding: 100px 0; /* Ajusta el espacio alrededor del título */
     }
     .title {
-        font-family: 'Bodoni';
+        font-family: 'Helvetica Neue';
         font-size: 80px;
         font-weight: bold;
         color: white;
