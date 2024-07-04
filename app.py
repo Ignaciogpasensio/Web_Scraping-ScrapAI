@@ -93,9 +93,8 @@ def main():
         padding: 20px; /* Adds padding inside the sidebar */
         border-right: 2px solid #ccc; /* Adds a border on the right side of the sidebar */
     }
-    .sidebar select {
-        background-color: white !important;
-        color: black !important;
+    .stSelectbox {
+        color: #e6e6e6 !important;
         border: 1px solid #ccc !important; /* Adjust border color and style as needed */
         border-radius: 4px;
         padding: 8px;
@@ -103,15 +102,24 @@ def main():
         width: 100%; /* Optional: Adjust width to fit your layout */
         box-shadow: none !important; /* Optional: Remove box shadow */
     }
-    .sidebar .stButton:hover {
-        background-color: #0056b3 !important;
-        border-color: #0056b3 !important;
+    .stSelectbox:hover {
+        background-color: #e6e6e6 !important;
+        border-color: #e6e6e6 !important;
+    }
+    .stSlider {
+        width: 100%; /* Full width */
+        margin-top: 0px; /* Margin on top */
+        margin-bottom: 0px; /* Margin on bottom */
+        padding: 8px; /* Padding inside the slider */
+        font-size: 14px; /* Font size of slider labels */
+        background-color: transparent; /* Transparent background */
     }
     .stButton button {
         background-color: white !important;
         color: black !important;
         font-size: 14px;
-        border-color: white !important;
+        border: 1px solid #ccc !important; /* Adjust border color and style as needed */
+        border-color: #e6e6e6 !important;
         border-radius: 50px;
         padding: 5px 5px;
         display: flex;
@@ -131,6 +139,7 @@ def main():
         text-align: center;
         padding: 100px 0; /* Ajusta el espacio alrededor del título */
         margin-bottom: 10px;
+        position: relative; /* Ensure tooltip position works */
     }
     .title {
         font-family: 'Helvetica Neue';
@@ -227,11 +236,11 @@ def main():
     st.markdown('<div class="title-container"><p class="title">ScrapAI</p></div>', unsafe_allow_html=True)
 
     # Sidebar - Main Category selection
-    main_category = st.sidebar.selectbox('1º SELECCIONE CATEGORÍA', list(categories.keys()))
+    main_category = st.sidebar.selectbox('SELECCIONE CATEGORÍA', list(categories.keys()))
 
     # Sidebar - Subcategory selection based on main category
     subcategory_options = [subcategory_names[subcategory] for subcategory in categories[main_category]]
-    translated_subcategory = st.sidebar.selectbox(f'2º SELECCIONE GAMA DE {main_category}', subcategory_options)
+    translated_subcategory = st.sidebar.selectbox(f'SELECCIONE GAMA DE {main_category}', subcategory_options)
 
     # Map translated subcategory back to original category name
     original_subcategory = None
@@ -245,7 +254,7 @@ def main():
         return
 
     # Price range slider
-    price_range = st.sidebar.slider('Seleccione el rango de precios que está dispuesto a pagar', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
+    price_range = st.sidebar.slider('RANGO DE PRECIOS', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
     min_price = price_range[0]
     max_price = price_range[1]
 
@@ -253,7 +262,7 @@ def main():
     max_discount = 100
 
     # Discount range slider (only for min_discount)
-    min_discount = st.sidebar.slider('Seleccione el nivel de descuento que busca', min_value=0, max_value=100, value=0, step=1)
+    min_discount = st.sidebar.slider('DESCUENTO', min_value=0, max_value=100, value=0, step=1)
 
     if st.sidebar.button('SCRAPE'):
         with st.spinner('Bichendo ofertas...'):
