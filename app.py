@@ -120,7 +120,7 @@ def main():
         background-position: center;
         background-repeat: no-repeat;
         text-align: center;
-        padding: 0px 0; /* Ajusta el espacio alrededor del título */
+        padding: 100px 0; /* Ajusta el espacio alrededor del título */
     }
     .title {
         font-family: 'Arial', sans-serif;
