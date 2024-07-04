@@ -124,7 +124,7 @@ def main():
     }
     .title {
         font-family: 'Arial', sans-serif;
-        font-size: 175px;
+        font-size: 150px;
         font-weight: bold;
         color: white;
         text-align: center; /* Centra el título */
