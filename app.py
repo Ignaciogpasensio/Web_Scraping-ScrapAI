@@ -129,7 +129,7 @@ def main():
         color: white;
         text-align: center; /* Centra el título */
         margin-top: 0px;
-        margin-bottom: 20px; /* Opcional: Añade un margen inferior */
+        margin-bottom: 0px; /* Opcional: Añade un margen inferior */
     }
     .product-container {
         position: relative;
