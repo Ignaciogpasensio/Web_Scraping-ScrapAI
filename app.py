@@ -115,7 +115,7 @@ def main():
         border-color: #0056b3 !important;
     }
     .title-container {
-        background-image: url('https://i.pinimg.com/236x/6e/6f/29/6e6f29e0d46a6398785e192226c82dd4.jpg'); /* URL de tu imagen de fondo */
+        background-image: url('https://7700b77c.rocketcdn.me/wp-content/uploads/2…/%C2%A9-Mark-Nouss-Louvre-featured-image-copy.jpg'); /* URL de tu imagen de fondo */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
