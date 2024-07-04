@@ -115,7 +115,7 @@ def main():
         border-color: #0056b3 !important;
     }
     .title-container {
-        background-image: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.amazon.es%2Fenrollado-Palacio-Belvedere-Gasolina-Im%25C3%25A1genes%2Fdp%2FB09JZTX2FS&psig=AOvVaw2_SoQc-IfWMw1pjpir1KU2&ust=1720137657436000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCNCGv6OKjIcDFQAAAAAdAAAAABAE'); /* URL de tu imagen de fondo */
+        background-image: url('https://m.media-amazon.com/images/I/61TfkrqrBGL._AC_SX679_.jpg'); /* URL de tu imagen de fondo */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
