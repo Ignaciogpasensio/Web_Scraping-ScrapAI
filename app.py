@@ -2,7 +2,7 @@ import streamlit as st
 import subprocess
 import json
 
-# Función para ejecutar scrap.py con argumentos
+# Function to run scrap.py with arguments
 def run_scraping(category, min_price, max_price, min_discount, max_discount):
     command = ['python', 'scrap.py', '--category', category]
 
@@ -17,102 +17,111 @@ def run_scraping(category, min_price, max_price, min_discount, max_discount):
 
     subprocess.run(command)
 
-# Función para cargar y formatear datos JSON
+# Function to load and format JSON data
 def load_data(category):
     filename = f'search.json'
     with open(filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
-
-    # Iterar a través de los productos y formatear tamaños y colores
+    
+    # Iterate through products and format sizes and colors
     for product in data:
         product['sizes'] = '/'.join(product['sizes'])
         product['colors'] = '/'.join(product['colors'])
-
+    
     return data
 
-# Diccionario de mapeo para nombres de subcategoría
+# Mapping dictionary for subcategory display names
 subcategory_names = {
-    'vestidos_monos': 'Vestidos & Monos',
-    'faldas': 'Faldas',
-    'camisas': 'Camisas',
-    'camisetas': 'Camisetas',
-    'tops': 'Tops',
-    'sudaderas': 'Sudaderas',
-    'brazers_chalecos': 'Brazers & Chalecos',
-    'pantalones': 'Pantalones',
-    'jeans': 'Jeans',
-    'bermudas_shorts': 'Bermudas & Shorts',
-    'chaquetas_trench': 'Chaquetas & Trenchs',
-    'jerseis_cardigan': 'Jerséis y Cárdigans',
-    'punto': 'Punto',
-    'total_look': 'Total Look',
-    'pijamas': 'Pijamas',
-    'bikinis_bañadores': 'Bikinis & Bañadores',
-    'athleisure': 'Athleisure',
-    'sneakers': 'Sneakers',
-    'sandalias': 'Sandalias',
-    'zapatos_tacon': 'Zapatos de Tacón',
-    'alpargatas_chanclas': 'Alpargatas & Chanclas',
-    'zapatos_planos': 'Zapatos Planos',
-    'bolsos_piel': 'Bolsos de Piel',
-    'bolso_nylon': 'Bolsos de Nylon',
-    'bandoleras': 'Bandoleras',
-    'capazos': 'Capazos',
-    'bolsos_rafia': 'Bolsos de Rafia',
-    'bolsos_mini': 'Bolsos Mini',
-    'bolsos_hombro': 'Bolsos de Hombro',
-    'neceseres': 'Neceseres',
-    'fundas_estuches': 'Fundas & Estuches',
-    'toallas': 'Toallas',
-    'gorras_sombreros': 'Gorras y Sombreros',
-    'carteras': 'Carteras',
-    'calcetines': 'Calcetines',
-    'cinturones': 'Cinturones',
-    'bisuteria': 'Bisutería',
-    'llaveros': 'Llaveros',
-    'gafas': 'Gafas',
-    'accesorios_movil': 'Accesorios para Móvil',
-    'fragancias': 'Fragancias'
+    'vestidos_monos': 'VESTIDOS & MONOS',
+    'faldas': 'FALDAS',
+    'camisas': 'CAMISAS',
+    'camisetas': 'CAMISETAS',
+    'tops': 'TOPS',
+    'sudaderas': 'SUDADERAS',
+    'brazers_chalecos': 'BRAZERS',
+    'pantalones': 'PANTALONES',
+    'jeans': 'JEANS',
+    'bermudas_shorts': 'BERMUDAS',
+    'chaquetas_trench': 'CHAQUETAS & TRENCHS',
+    'jerseis_cardigan': 'JERSÉIS & CÁRDIGANS',
+    'punto': 'PUNTO',
+    'total_look': 'TOTAL LOOK',
+    'pijamas': 'PIJAMAS',
+    'bikinis_bañadores': 'BIKINIS & BAÑADORES',
+    'athleisure': 'ATHLEISURE',
+    'sneakers': 'SNEAKER',
+    'sandalias': 'SANDALIA',
+    'zapatos_tacon': 'ZAPATOS DE TACÓN',
+    'alpargatas_chanclas': 'ALPARGATAS & CHANCLAS',
+    'zapatos_planos': 'ZAPATOS PLANOS',
+    'bolsos_piel': 'BOLSOS DE PIEL',
+    'bolso_nylon': 'BOLSOS DE NYLON',
+    'bandoleras': 'BANDOLERAS',
+    'capazos': 'CAPAZOS',
+    'bolsos_rafia': 'BOLSOS DE RAFIA',
+    'bolsos_mini': 'BOLSOS MINI',
+    'bolsos_hombro': 'BOLSOS DE HOMBRO',
+    'neceseres': 'NECESERES',
+    'fundas_estuches': 'FUNDAS & ESTUCHES',
+    'toallas': 'TOALLAS',
+    'gorras_sombreros': 'GORRAS & SOMBREROS',
+    'carteras': 'CARTERAS',
+    'calcetines': 'CALCETINES',
+    'cinturones': 'CINTURONES',
+    'bisuteria': 'BISUTERÍA',
+    'llaveros': 'LLAVEROS',
+    'gafas': 'GAFAS',
+    'accesorios_movil': 'ACCESORIOS PARA MÓVIL',
+    'fragancias': 'FRAGANCIAS'
 }
 
-# Aplicación Streamlit
+# Streamlit app
 def main():
     categories = {
-        'Ropa': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
-        'Calzado': ['sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas', 'zapatos_planos'],
-        'Bolsos': ['bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos', 'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches'],
-        'Accesorios': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
+        'ROPA': ['vestidos_monos', 'faldas', 'camisas', 'camisetas', 'tops', 'sudaderas', 'brazers_chalecos', 'pantalones', 'jeans', 'bermudas_shorts', 'chaquetas_trench', 'jerseis_cardigan', 'punto', 'total_look', 'pijamas', 'bikinis_bañadores', 'athleisure'],
+        'CALZADO': ['sneakers', 'sandalias', 'zapatos_tacon', 'alpargatas_chanclas', 'zapatos_planos'],
+        'BOLSOS': ['bolsos_piel', 'bolso_nylon', 'bandoleras', 'capazos', 'bolsos_rafia', 'bolsos_mini', 'bolsos_hombro', 'neceseres', 'fundas_estuches'],
+        'ACCESORIOS': ['toallas', 'gorras_sombreros', 'carteras', 'calcetines', 'cinturones', 'bisuteria', 'llaveros', 'gafas', 'accesorios_movil', 'fragancias']
     }
 
     st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap'); /* Import custom font */
     .sidebar .sidebar-content {
         background-color: white !important;
         color: black !important;
-        padding: 20px; /* Añade padding dentro de la barra lateral */
-        border-right: 2px solid #ccc; /* Añade un borde en el lado derecho de la barra lateral */
+        padding: 20px; /* Adds padding inside the sidebar */
+        border-right: 2px solid #ccc; /* Adds a border on the right side of the sidebar */
     }
     .sidebar select {
         background-color: white !important;
         color: black !important;
-        border: 1px solid #ccc !important; /* Ajusta el color y estilo del borde según sea necesario */
+        border: 1px solid #ccc !important; /* Adjust border color and style as needed */
         border-radius: 4px;
         padding: 8px;
         font-size: 14px;
-        width: 100%; /* Opcional: Ajusta el ancho para que se ajuste a tu diseño */
-        box-shadow: none !important; /* Opcional: Elimina la sombra */
-    }
-    .sidebar .stButton {
-        background-color: #007bff !important;
-        color: white !important;
-        border-color: #007bff !important;
-        border-radius: 4px;
-        padding: 10px 20px;
-        font-weight: bold;
+        width: 100%; /* Optional: Adjust width to fit your layout */
+        box-shadow: none !important; /* Optional: Remove box shadow */
     }
     .sidebar .stButton:hover {
         background-color: #0056b3 !important;
         border-color: #0056b3 !important;
+    }
+    .stButton button {
+        background-color: white !important;
+        color: black !important;
+        font-size: 14px;
+        border-color: white !important;
+        border-radius: 50px;
+        padding: 5px 5px;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .stButton button:hover {
+        background-color: #e6e6e6 !important;
+        border-color: #e6e6e6 !important;
     }
     .title-container {
         background-image: url('https://7700b77c.rocketcdn.me/wp-content/uploads/2020/12/©-Mark-Nouss-Louvre-featured-image-copy.jpg'); /* URL de tu imagen de fondo */
@@ -121,27 +130,28 @@ def main():
         background-repeat: no-repeat;
         text-align: center;
         padding: 100px 0; /* Ajusta el espacio alrededor del título */
+        margin-bottom: 10px;
     }
     .title {
-        font-family: 'Bodoni';
-        font-size: 80px;
+        font-family: 'Helvetica Neue';
+        font-size: 95px;
         font-weight: bold;
         color: white;
-        text-align: center; /* Centra el título */
+        text-align: center; /* Center align the title */
         margin-top: 0px;
-        margin-bottom: 20px; /* Opcional: Añade un margen inferior */
+        margin-bottom: 20px; /* Optional: Add some bottom margin */
     }
     .product-container {
         position: relative;
         display: inline-block;
         width: 100%;
-        margin-bottom: 20px; /* Ajusta el espacio entre productos */
+        margin-bottom: 20px; /* Adjust spacing between products */
     }
     .product-container img {
         width: 100%;
         height: auto;
         transition: transform 0.2s, opacity 0.2s;
-        position: relative; /* Asegura que el texto de descuento esté posicionado relativo a la imagen */
+        position: relative; /* Ensure discount text is positioned relative to the image */
     }
     .product-container:hover img {
         transform: scale(1.05);
@@ -149,18 +159,19 @@ def main():
     }
     .discount-text {
         position: absolute;
-        top: 50%; /* Centra verticalmente el texto de descuento */
-        left: 50%; /* Centra horizontalmente el texto de descuento */
-        transform: translate(-50%, -50%); /* Ajusta para centrar */
-        color: black; /* Color del texto */
-        font-size: 4em; /* Doble tamaño: 2em era el tamaño anterior */
+        top: 50%; /* Center discount text vertically */
+        left: 50%; /* Center discount text horizontally */
+        transform: translate(-50%, -50%); /* Adjust for centering */
+        color: black; /* Text color */
+        font-size: 4em; /* Double size: 2em was previous size */
         font-weight: bold;
         z-index: 1;
+        font-family: 'Helvetica Neue'; /* Custom font */
     }
     .tooltip {
         position: relative;
         display: inline-block;
-        z-index: 0; /* Asegura que los tooltips estén detrás del texto de descuento */
+        z-index: 0; /* Ensure tooltips are behind the discount text */
     }
     .tooltip .tooltiptext {
         visibility: hidden;
@@ -172,26 +183,26 @@ def main():
         padding: 5px 0;
         border-radius: 6px;
         position: absolute;
-        z-index: 2; /* Asegura que los tooltips estén por encima de otros elementos */
-        bottom: 125%;
+        z-index: 2; /* Ensure tooltips are above other elements */
+        bottom: 110%;
         left: 50%;
         margin-left: -100px;
         opacity: 0;
         transition: opacity 0.3s;
-        pointer-events: none; /* Asegura que el tooltip no interfiera con los eventos del mouse */
+        pointer-events: none; /* Ensure tooltip does not interfere with mouse events */
     }
     .tooltip:hover .tooltiptext {
         visibility: visible;
         opacity: 1;
     }
     .tooltip .tooltiptext .smaller-text {
-        font-size: 0.7em; /* Ajusta el tamaño de la fuente a más pequeño */
-        line-height: 1.5; /* Ajusta la altura de línea */
+        font-size: 0.7em; /* Adjust the font size smaller */
+        line-height: 1.5; /* Adjust the line height */
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # JavaScript para ajustar la posición del tooltip dinámicamente
+    # JavaScript to adjust tooltip position dynamically
     st.markdown(
         """
         <script>
@@ -212,35 +223,48 @@ def main():
         unsafe_allow_html=True
     )
 
-    # Barra lateral - Selección de categoría principal
-    main_category = st.sidebar.selectbox('Selecciona la Categoría', list(categories.keys()))
+    # Custom title with font style and center alignment
+    st.markdown('<div class="title-container"><p class="title">ScrapAI</p></div>', unsafe_allow_html=True)
 
-    # Barra lateral - Selección de subcategoría basada en la categoría principal
-    subcategory = st.sidebar.selectbox(f'¿Qué gama de {main_category} desea?', categories[main_category])
+    # Sidebar - Main Category selection
+    main_category = st.sidebar.selectbox('1º SELECCIONE CATEGORÍA', list(categories.keys()))
 
-    # Slider de rango de precios
+    # Sidebar - Subcategory selection based on main category
+    subcategory_options = [subcategory_names[subcategory] for subcategory in categories[main_category]]
+    translated_subcategory = st.sidebar.selectbox(f'2º SELECCIONE GAMA DE {main_category}', subcategory_options)
+
+    # Map translated subcategory back to original category name
+    original_subcategory = None
+    for key, value in subcategory_names.items():
+        if value == translated_subcategory:
+            original_subcategory = key
+            break
+
+    if original_subcategory is None:
+        st.error("Error: No se encontró la subcategoría original correspondiente al nombre traducido.")
+        return
+
+    # Price range slider
     price_range = st.sidebar.slider('Seleccione el rango de precios que está dispuesto a pagar', min_value=0.0, max_value=2000.0, value=(0.0, 2000.0), step=1.0)
     min_price = price_range[0]
     max_price = price_range[1]
 
-    # Slider de rango de descuento
-    discount_range = st.sidebar.slider('Seleccione el rango de descuento que le interesa', min_value=0, max_value=100, value=(0, 100), step=1)
-    min_discount = discount_range[0]
-    max_discount = discount_range[1]
+    # Fixed maximum discount
+    max_discount = 100
 
-    # Título personalizado con estilo de fuente y alineación central
-    st.markdown('<div class="title-container"><p class="title">ScrapAI</p></div>', unsafe_allow_html=True)
+    # Discount range slider (only for min_discount)
+    min_discount = st.sidebar.slider('Seleccione el nivel de descuento que busca', min_value=0, max_value=100, value=0, step=1)
 
     if st.sidebar.button('SCRAPE'):
-        with st.spinner('Buscando ofertas...'):
-            run_scraping(subcategory, min_price, max_price, min_discount, max_discount)
+        with st.spinner('Bichendo ofertas...'):
+            run_scraping(original_subcategory, min_price, max_price, min_discount, max_discount)
 
-    # Mostrar datos de productos raspados
+    # Display scraped product data
     if st.sidebar.checkbox('Mostrar productos'):
-        st.subheader(f'{subcategory_names[subcategory]}')
-        data = load_data(subcategory)
+        st.subheader(f'{translated_subcategory}')
+        data = load_data(original_subcategory)
 
-        # Crear columnas para mostrar productos
+        # Create columns for product display
         cols = st.columns(3)
         for index, product in enumerate(data):
             discount_text = f"-{product['product_discount']}%"
@@ -255,9 +279,9 @@ def main():
             sizes = product['sizes']
             colors = product['colors']
 
-            # Filtrar productos según el rango de precio y descuento
+            # Filter products based on price and discount range
             if min_price <= product_price_after <= max_price and min_discount <= product['product_discount'] <= max_discount:
-                cols[index % 3].markdown(f"""
+               cols[index % 3].markdown(f"""
                 <a href="{product_page_url}" target="_blank" style="text-decoration: none; color: inherit;">
                     <div class="product-container">
                         <div class="tooltip">
@@ -269,9 +293,9 @@ def main():
                                 <strong>{product_name}</strong><br>
                                 <s>{product_price_before}€</s><br>
                                 <strong>{product_price_after}€</strong><br>
-                                <div class="smaller-text">Marca: {product_brand}<br>
-                                Tallas: {sizes}<br>
-                                Colores: {colors}<br>
+                                <div class="smaller-text">Brand: {product_brand}<br>
+                                Sizes: {sizes}<br>
+                                Colors: {colors}<br>
                                 ID: {product_id}</div>
                             </span>
                         </div>
